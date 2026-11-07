@@ -1,0 +1,81 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{db}/documents {
+    function girdi() { return request.auth != null; }
+    function ep() { return request.auth.token.email.lower(); }
+    function dogrulandi() { return girdi() && request.auth.token.email_verified == true; }
+    function uyeYol(k) { return /databases/$(db)/documents/klinikler/$(k)/uyeler/$(request.auth.uid); }
+    function uye(k) { return girdi() && exists(uyeYol(k)); }
+    function yonetici(k) { return uye(k) && get(uyeYol(k)).data.rol == 'yonetici'; }
+    function rolGecerli(r) { return r in ['yonetici', 'hekim', 'sekreter']; }
+
+    // Kişinin hangi kliniğe bağlı olduğu: yalnızca kendisi okur/yazar
+    match /kullanicilar/{u} {
+      allow read, write: if girdi() && request.auth.uid == u;
+    }
+
+    // Davet edilen e-postanın klinik bilgisini bulabilmesi için dizin
+    match /davetIndeks/{e} {
+      allow read: if dogrulandi() && ep() == e;
+      allow create: if girdi() && yonetici(request.resource.data.klinik) && rolGecerli(request.resource.data.rol);
+      allow update: if girdi() && yonetici(resource.data.klinik) && yonetici(request.resource.data.klinik) && rolGecerli(request.resource.data.rol);
+      allow delete: if girdi() && (ep() == e || yonetici(resource.data.klinik));
+    }
+
+    match /klinikler/{k} {
+      allow read: if uye(k);
+      allow create: if girdi() && request.resource.data.sahip == request.auth.uid;
+      allow update: if yonetici(k) && request.resource.data.sahip == resource.data.sahip;
+      allow delete: if girdi() && resource.data.sahip == request.auth.uid;
+
+      match /uyeler/{u} {
+        allow read: if uye(k);
+        // Kurucu kendini yönetici olarak ekler; davetli kişi e-postasını doğruladıysa davetteki rolle katılır
+        allow create: if girdi() && request.auth.uid == u && (
+          (get(/databases/$(db)/documents/klinikler/$(k)).data.sahip == u && request.resource.data.rol == 'yonetici')
+          || (dogrulandi()
+              && exists(/databases/$(db)/documents/klinikler/$(k)/davetler/$(ep()))
+              && request.resource.data.rol == get(/databases/$(db)/documents/klinikler/$(k)/davetler/$(ep())).data.rol));
+        allow update: if yonetici(k) && rolGecerli(request.resource.data.rol) && get(/databases/$(db)/documents/klinikler/$(k)).data.sahip != u;
+        allow delete: if (yonetici(k) && get(/databases/$(db)/documents/klinikler/$(k)).data.sahip != u) || (girdi() && request.auth.uid == u);
+      }
+
+      match /davetler/{e} {
+        allow read: if uye(k) || (dogrulandi() && ep() == e);
+        allow create, update: if yonetici(k) && rolGecerli(request.resource.data.rol);
+        allow delete: if yonetici(k) || (dogrulandi() && ep() == e);
+      }
+
+      // Klinik verisi: yalnızca üyeler
+      match /veri/{d} {
+        allow read, write: if uye(k);
+      }
+
+      // Aynı mesajın iki cihazdan gitmemesi için gönderim kaydı
+      match /gonderim/{g} {
+        allow read, create, delete: if uye(k);
+      }
+
+      // Kliniğin WhatsApp Business bilgileri: üyeler okur, yönetici yazar
+      match /gizli/{g} {
+        allow read: if uye(k);
+        allow write: if yonetici(k);
+      }
+    }
+  
+    // Hastanın "Geleceğim / Gelemeyeceğim / Başka gün" yanıtı (link ile, giriş gerektirmez)
+    match /yanitlar/{y} {
+      allow get: if true;
+      allow list: if girdi() && uye(resource.data.klinik);
+      allow create: if girdi() && uye(request.resource.data.klinik);
+      allow update: if (girdi() && uye(resource.data.klinik))
+        || (request.resource.data.diff(resource.data).affectedKeys().hasOnly(['durum', 'istek', 'islendi', 'yanit', 'ret'])
+            && request.resource.data.durum in ['bekliyor', 'geliyor', 'gelmeyecek', 'baska']
+            && request.resource.data.islendi == false
+            && (!('istek' in request.resource.data) || (request.resource.data.istek is string && request.resource.data.istek.size() <= 300))
+            && (!('ret' in request.resource.data) || request.resource.data.ret is bool)
+            && request.resource.data.yanit == request.time);
+      allow delete: if girdi() && uye(resource.data.klinik);
+    }
+  }
+}
