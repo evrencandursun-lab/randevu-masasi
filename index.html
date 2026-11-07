@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="tr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Randevu Masası</title></head><body>
+<html lang="tr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Randevu Masası</title><meta name="description" content="Randevunuzu tek dokunuşla yanıtlayın: Geleceğim · Başka gün · Gelemeyeceğim"><meta name="theme-color" content="#0F7A73"><meta property="og:type" content="website"><meta property="og:site_name" content="Randevu Masası"><meta property="og:title" content="Randevunuzu yanıtlayın"><meta property="og:description" content="Geleceğim · Başka bir gün · Gelemeyeceğim — tek dokunuşla"><meta property="og:image" content="https://randevu-masasi.web.app/onay.jpg"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22%3E%3Crect width=%2224%22 height=%2224%22 rx=%226%22 fill=%22%230F7A73%22/%3E%3Cpath d=%22M7 6c-1.6 0-2.8 1.3-2.8 3.2 0 2.4 1.2 3.2 1.6 5.6.4 2.4.8 5.2 2 5.2s1.2-3.2 2.4-3.2 1.2 3.2 2.4 3.2 1.6-3.2 2-5.6c.4-2.4 1.6-3.2 1.6-5.6C16.2 7.3 15 6 13.4 6c-1.4 0-2 .8-3.2.8S8.4 6 7 6z%22 fill=%22white%22/%3E%3C/svg%3E"></head><body>
 <title>Randevu Masası</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -328,12 +328,27 @@ body{background:radial-gradient(1200px 400px at 50% -200px,var(--brand-soft),tra
 @media (max-width:719px){.sayfaBas{padding:16px;border-radius:18px;gap:10px}.sayfaBas .sbIk{width:40px;height:40px;border-radius:12px}}
 
 .kurtarKod{font-family:var(--f-mono);font-size:clamp(22px,6vw,30px);font-weight:700;letter-spacing:.08em;text-align:center;padding:16px;border-radius:14px;background:var(--surface2);border:2px dashed var(--brand);user-select:all;word-break:break-all}
-@media(max-width:600px){.top .wrap{flex-wrap:nowrap;gap:8px}.logo{flex:1 1 auto;min-width:0;font-size:15px}.logo>span,.logo b{overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}.top .es{flex:none;max-width:38vw;overflow:hidden;text-overflow:ellipsis}}
+#baski,#baskiUst{display:none}
+.es.yaz{display:inline-flex;align-items:center;gap:4px}
+@media print{
+  html,body{background:#fff!important;color:#111!important}
+  *{-webkit-print-color-adjust:exact;print-color-adjust:exact;box-shadow:none!important}
+  .top,#ovRoot,.toast,#render,.noprint,#view .btn,#view .acts,#view [role=tablist],#view .seg,#view .daybar>button,#view details>summary{display:none!important}
+  #baskiUst{display:block;font:600 12px/1.4 system-ui,sans-serif;color:#333;border-bottom:1px solid #bbb;padding:0 0 6px;margin:0 0 12px}
+  #view{max-width:none!important;padding:0!important;margin:0!important}
+  .panel,.card,article,.icard,tr,[data-blok]{break-inside:avoid}
+  .tablebox{overflow:visible!important}
+  body.baskiBelge>*:not(#baski){display:none!important}
+  body.baskiBelge #baski{display:block!important}
+  body.baskiBelge #baski *{min-height:0!important}
+  body.baskiBelge #baski .doc{zoom:1!important;margin:0 auto!important;box-shadow:none!important;border:0!important}
+}
+@media(max-width:600px){.es.yaz span{display:none}.top .wrap{flex-wrap:nowrap;gap:8px}.logo{flex:1 1 auto;min-width:0;font-size:15px}.logo>span,.logo b{overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}.top .es{flex:none;max-width:38vw;overflow:hidden;text-overflow:ellipsis}}
 </style>
 
 <header class="top">
   <div class="wrap">
-    <div class="logo"><i aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--brand-ink)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3c-2 0-3.5 1.6-3.5 4 0 3 1.5 4 2 7 .5 3 1 7 2.5 7s1.5-4 3-4 1.5 4 3 4 2-4 2.5-7c.5-3 2-4 2-7 0-2.4-1.5-4-3.5-4-1.8 0-2.6 1-4 1s-2.2-1-4-1z"/></svg></i><span id="klinikAd">Randevu Masası</span><button class="es" id="esDurum" data-a="esitleSimdi" hidden></button><button class="es" id="kilitBtn" data-a="kilitle" hidden>Kilitle</button></div>
+    <div class="logo"><i aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--brand-ink)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3c-2 0-3.5 1.6-3.5 4 0 3 1.5 4 2 7 .5 3 1 7 2.5 7s1.5-4 3-4 1.5 4 3 4 2-4 2.5-7c.5-3 2-4 2-7 0-2.4-1.5-4-3.5-4-1.8 0-2.6 1-4 1s-2.2-1-4-1z"/></svg></i><span id="klinikAd">Randevu Masası</span><button class="es" id="esDurum" data-a="esitleSimdi" hidden></button><button class="es yaz" id="yazBtn" data-a="ekranYaz" hidden title="Bu ekranı yazdır" aria-label="Bu ekranı yazdır"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V3h12v6M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="7"/></svg><span>Yazdır</span></button><button class="es" id="kilitBtn" data-a="kilitle" hidden>Kilitle</button></div>
     <nav class="nav" aria-label="Bölümler">
       <button data-a="tab" data-t="gun"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Gün</button>
       <button data-a="tab" data-t="hastalar"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="4"/><path d="M2 21c0-4 3-6 7-6s7 2 7 6M17 11a3 3 0 1 0 0-6M22 21c0-3-2-5-4-5.5"/></svg>Hastalar</button>
@@ -344,8 +359,9 @@ body{background:radial-gradient(1200px 400px at 50% -200px,var(--brand-soft),tra
     </nav>
   </div>
 </header>
-<main class="wrap" id="view"></main>
+<div class="wrap" id="baskiUst" aria-hidden="true"></div><main class="wrap" id="view"></main>
 <div id="ovRoot"></div>
+<div id="baski"></div>
 <div id="render" aria-hidden="true" style="position:fixed;left:-10000px;top:0;width:794px;pointer-events:none"></div>
 <div class="toast" id="toast" role="status" hidden></div>
 
@@ -368,6 +384,11 @@ const GUN=['Paz','Pzt','Sal','Çar','Per','Cum','Cmt'],AY=['Oca','Şub','Mar','N
 const kisa=s=>{const d=parse(s);return GUN[d.getDay()]+' '+d.getDate()+' '+AY[d.getMonth()]};
 const kisaYil=s=>{if(!s)return'—';const d=parse(s);return d.getDate()+' '+AY[d.getMonth()]+' '+d.getFullYear()};
 const tamTarih=s=>parse(s).toLocaleDateString('tr-TR',{day:'2-digit',month:'2-digit',year:'numeric'});
+const TPL_HAT='🦷 *{klinik}*\n\nMerhaba {ad},\nrandevunuzu hatırlatırız:\n\n🗓️ *{tarih}*\n🕒 *{saat}*\n🩺 {hekim}\n\nGelecek misiniz? Tek dokunuşla yanıtlayın 👇\n{onay}';
+const TPL_ESKI=['Merhaba {ad}, {klinik} randevunuz {tarih} saat {saat}. Onaylamak için "1" yazabilirsiniz; gelemeyecekseniz lütfen bu mesaja yazın.','Merhaba {ad}, {klinik} randevunuz {tarih} saat {saat}. Gelip gelemeyeceğinizi ya da başka güne almak istediğinizi buradan tek dokunuşla bildirin: {onay}'];
+const tplHatAl=()=>{const t=String(S.ayar.tplHat||'').trim();return !t||TPL_ESKI.includes(t)||/Onaylamak için .1. yazabilirsiniz/.test(t)?TPL_HAT:t};
+const ONAY_KOK='https://randevu-masasi.web.app/',ONAY_GORSEL=ONAY_KOK+'onay.jpg';
+const PRN='<svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V3h12v6M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="7"/></svg>';
 const uzun=s=>parse(s).toLocaleDateString('tr-TR',{weekday:'long',day:'numeric',month:'long'});
 const TL=n=>new Intl.NumberFormat('tr-TR',{style:'currency',currency:'TRY',minimumFractionDigits:2}).format(Number(n)||0);
 const yas=d=>{if(!d)return'';const b=parse(d),t=new Date();let y=t.getFullYear()-b.getFullYear();if(t<new Date(t.getFullYear(),b.getMonth(),b.getDate()))y--;return y};
@@ -416,14 +437,14 @@ function ornekGoruntu(tur){
 
 /* ---------- Örnek veri ---------- */
 function varsayilanAyar(){return{klinik:'Kliniğim',adres:'[Klinik adresi]',telefon:'[Klinik telefonu]',hekimler:['Dt. Hekim A','Dt. Hekim B'],bas:'09:00',bit:'19:00',slot:30,
-  tplHat:'Merhaba {ad}, {klinik} randevunuz {tarih} saat {saat}. Onaylamak için "1" yazabilirsiniz; gelemeyecekseniz lütfen bu mesaja yazın.',
+  tplHat:TPL_HAT,
   tplYeni:'Merhaba {ad}, {tarih} tarihli randevunuz gerçekleşemedi. Size uygun yeni bir gün ayarlayalım mı? — {klinik}',
   tplErken:'Merhaba {ad}, daha erken bir saat boşaldı. Randevunuzu öne almak ister misiniz? — {klinik}',
   tplKontrol:'Merhaba {ad}, son ziyaretinizin üzerinden 6 ay geçti. {klinik} olarak size uygun bir kontrol günü ayarlayalım mı? Bu mesajları almak istemiyorsanız "RET" yazın.',
   tplOdeme:'Merhaba {ad}, {klinik} ödeme planınızdaki {vade} vadeli {tutar} tutarındaki taksitiniz için hatırlatmadır. Sorunuz olursa bu mesaja yazabilirsiniz.',
   tplDogum:'Merhaba {ad}, doğum gününüzü kutlar, sağlıklı bir yıl dileriz. — {klinik} Bu mesajları almak istemiyorsanız "RET" yazın.',
   entegrasyon:{wa:{mod:'link',numara:'',sablon:''},drive:{mod:'kapali',klasor:'Randevu Masası',istemci:'',klasorId:'',gorselKlasorId:''},kopru:{aktif:false,cihaz:'',klasor:'',bicim:'hastaNo'},yedek:{saat:'21:00',hedef:''},iys:{markaKodu:''},fatura:{tur:'earsiv',vkn:'',vd:'',unvan:'',il:'',ilce:'',kdv:10,seri:'RMS',entegrator:'',url:''},dhbs:{ad:''},takvim:{mod:'link',ad:'bas',hastaLink:true,takvimId:''}},
-  oto:{hatirlatma:true,hatSaat:'17:00',gelmedi:true,taksit:true,kontrol:true,dogum:false,lab:true,stok:true,talep:true,yedek:true,yedekGun:7},
+  oto:{hatirlatma:true,hatSaat:'17:00',gelmedi:true,taksit:true,kontrol:true,dogum:false,lab:true,stok:true,talep:true,yedek:true,yedekGun:7,tekrar:4,tekrarMax:2},
   hakedis:{},labFirmalar:['Örnek Dental Lab','Örnek Seramik Lab'],
   ilaclar:[
     {id:'amk',ad:'Amoksisilin + klavulanik asit 1000 mg tablet',kullanim:'Günde 2 kez 1 tablet, tok karnına, 7 gün',kutu:1,grup:'penisilin'},
@@ -620,7 +641,7 @@ const hatPill=r=>r.hat?`<span class="pill ${HAT[r.hat][1]}">${HAT[r.hat][0]}</sp
 const riskPill=k=>{const {alerji,riskler:rs}=riskler(k);return (alerji?`<span class="pill bad" title="Alerji">⚠ Alerji: ${esc(alerji)}</span>`:'')+(rs.length?`<span class="pill bad">⚠ ${esc(rs[0])}${rs.length>1?' +'+(rs.length-1):''}</span>`:'')};
 function selam(){const h=new Date().getHours(),u=typeof aktifKul==='function'&&aktifKul();const sz=h<5?'İyi geceler':h<11?'Günaydın':h<17?'İyi günler':h<22?'İyi akşamlar':'İyi geceler';return sz+(u&&u.ad?', '+esc(String(u.ad).split(' ')[0]):'')}
 function ornekAyarVar(){const a=S.ayar;return a.hekimler.some(h=>/^Dt\. Hekim [AB]$/.test(h))||/^\[.*\]$/.test(String(a.adres).trim())||/^\[.*\]$/.test(String(a.telefon).trim())||(a.labFirmalar||[]).some(x=>/^Örnek /.test(x))}
-function demoBant(){const tk=TKV.fbAcik()&&!TKV.fbHazir()?`<div class="infobox" style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><span style="flex:1;min-width:200px">Google Takvim eşitlemesi beklemede. Google güvenlik için onay istiyor.</span><button class="btn sm pri" data-a="takvimBagla">Devam ettir</button></div>`:'';return tk+demoBant0()}
+function demoBant(){const gh=/github\.io$/.test(location.hostname)?`<div class="warnbox" style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><span style="flex:1;min-width:200px"><b>Programın yeni adresi:</b> randevu-masasi.web.app — aynı e-posta ve şifreyle girin, verileriniz hesabınızda. Drive ve Takvim'i yeni adreste bir kez yeniden bağlayın.</span><a class="btn sm pri" href="${ONAY_KOK}">Yeni adrese geç</a></div>`:'';const tk=TKV.fbAcik()&&!TKV.fbHazir()?`<div class="infobox" style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><span style="flex:1;min-width:200px">Google Takvim eşitlemesi beklemede. Google güvenlik için onay istiyor.</span><button class="btn sm pri" data-a="takvimBagla">Devam ettir</button></div>`:'';const ic=gh+tk+demoBant0();return ic?`<div class="noprint">${ic}</div>`:''}
 function demoBant0(){if(!S.ornek&&ornekAyarVar())return`<div class="warnbox" style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><span style="flex:1;min-width:200px"><b>Bazı ayarlar hâlâ örnek:</b> ${esc([S.ayar.hekimler.some(h=>/^Dt\. Hekim [AB]$/.test(h))?'hekim adları ('+S.ayar.hekimler.filter(h=>/^Dt\. Hekim [AB]$/.test(h)).join(', ')+')':'',/^\[/.test(String(S.ayar.adres).trim())?'adres':'',/^\[/.test(String(S.ayar.telefon).trim())?'telefon':'',(S.ayar.labFirmalar||[]).some(x=>/^Örnek /.test(x))?'laboratuvar adları':''].filter(Boolean).join(', '))}. Çıktılarda bunlar görünür.</span><button class="btn sm" data-a="ayarGit">Ayarlar'da düzelt</button></div>`;return S.ornek?`<div class="demo"><span><b>Deneme sürümü, örnek veriler.</b> Kişiler, numaralar ve fiyatlar uydurmadır. Gerçek hasta bilgisi girmeden önce Ayarlar'dan örnek kayıtları silin.</span></div>`:''}
 
 /* ---------- Gün ---------- */
@@ -739,7 +760,7 @@ function vHasta(k){
   const sb=(v,t)=>`<button role="tab" aria-selected="${U.hseg===v}" class="${U.hseg===v?'on':''}" data-a="hseg" data-v="${v}">${t}</button>`;
   let h=`<div class="phead"><button class="btn icon" data-a="hastaKapat" aria-label="Hasta listesine dön">${ico.back}</button>
     <div class="nm"><h1>${esc(k.ad)}</h1><div class="sub"><span class="mono">${esc(telGoster(k.tel))}</span>${k.dogum?`<span>${tamTarih(k.dogum)} · ${yas(k.dogum)} yaş</span>`:''}<span>Sonraki randevu: ${n?kisa(n.tarih)+' '+n.saat:'—'}</span>${gmPill(k)}${k.kaynak?`<span>Kaynak: ${esc(k.kaynak)}</span>`:''}</div></div>
-    <div class="row"><button class="btn sm pri" data-a="yeni" data-kisi="${k.id}">+ Randevu</button>${waBtn(waLink(k.tel,''),'WhatsApp')}<button class="btn sm" data-a="kisiDuzenle" data-id="${k.id}">Bilgileri düzenle</button>${n?`<button class="btn sm" data-a="belge" data-t="kart" data-id="${n.id}" data-k="${k.id}">Randevu kartı</button>`:''}</div></div>`;
+    <div class="row"><button class="btn sm pri" data-a="yeni" data-kisi="${k.id}">+ Randevu</button>${waBtn(waLink(k.tel,''),'WhatsApp')}<button class="btn sm" data-a="kisiDuzenle" data-id="${k.id}">Bilgileri düzenle</button>${n?`<button class="btn sm" data-a="belge" data-t="kart" data-id="${n.id}" data-k="${k.id}">Randevu kartı</button><button class="btn sm" data-a="belgeYaz" data-t="kart" data-id="${n.id}" data-k="${k.id}">${PRN}Yazdır</button>`:''}</div></div>`;
   if(alerji||rs.length)h+=`<div class="alert" role="alert"><span aria-hidden="true">⚠</span>${alerji?`<span>Alerji: ${esc(alerji)}</span>`:''}${rs.length?`<span>${rs.map(esc).join(' · ')}</span>`:''}</div>`;
   h+=`<div class="seg" role="tablist" aria-label="Hasta kartı bölümleri">${sb('ozet','Özet')}${sb('anamnez','Anamnez')}${sb('odo','Diş şeması')}${sb('plan','Tedavi planı')}${sb('rontgen',`Röntgen (${k.goruntuler.length})`)}${sb('onam',`Onamlar (${k.onamlar.length})`)}${sb('odeme','Ödemeler')}${sb('recete',`Reçete (${k.receteler.length})`)}${sb('lab',`Laboratuvar (${S.lab.filter(l=>l.kisiId===k.id).length})`)}${sb('belgeler',`Belgeler (${belgeListe(k).length})`)}</div>`;
   return h+({ozet:hOzet,anamnez:hAnamnez,odo:hOdo,plan:hPlan,rontgen:hRontgen,onam:hOnam,odeme:hOdeme,recete:hRecete,lab:hLab,belgeler:hBelgeler}[U.hseg]||hOzet)(k);
@@ -780,9 +801,9 @@ function hOdo(k){
 }
 function hPlan(k){
   const top=planToplam(k),yap=yuvarla(k.plan.filter(p=>p.durum==='yapildi').reduce((s,p)=>s+Number(p.fiyat),0));
-  return `<div class="row"><h2 style="flex:1">Tedavi planı</h2><button class="btn sm pri" data-a="planEkle">+ İşlem ekle</button><button class="btn sm" data-a="belge" data-t="plan">${ico.doc}Teklif / plan çıktısı</button><button class="btn sm" data-a="odemePlani">Ödeme planı oluştur</button></div>
+  return `<div class="row"><h2 style="flex:1">Tedavi planı</h2><button class="btn sm pri" data-a="planEkle">+ İşlem ekle</button><button class="btn sm" data-a="belge" data-t="plan">${ico.doc}Teklif / plan çıktısı</button><button class="btn sm" data-a="belgeYaz" data-t="plan">${PRN}Yazdır</button><button class="btn sm" data-a="odemePlani">Ödeme planı oluştur</button></div>
   ${k.plan.length?`<div class="tablebox" style="overflow-x:auto"><table class="t"><thead><tr><th>Diş</th><th>İşlem</th><th>Hekim</th><th>Durum</th><th class="num">Ücret</th><th><span style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">İşlemler</span></th></tr></thead><tbody>
-  ${k.plan.map(p=>`<tr><td class="mono">${esc(p.dis||'—')}</td><td>${esc(p.ad)}</td><td>${esc(p.hekim||'')}</td><td><button class="btn sm" data-a="planDurum" data-id="${p.id}" aria-label="Durumu değiştir: ${p.durum==='yapildi'?'Yapıldı':'Planlandı'}">${p.durum==='yapildi'?`<span class="pill ok">✓ Yapıldı ${p.tarih?kisa(p.tarih):''}</span>`:'<span class="pill warn">Planlandı</span>'}</button></td><td class="num"><label style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)" for="pf_${p.id}">Ücret</label><input id="pf_${p.id}" data-pf="${p.id}" type="number" min="0" step="50" value="${p.fiyat}" style="width:110px;text-align:right;min-height:40px;border:1px solid var(--line);border-radius:8px;background:var(--bg);padding:4px 8px"></td><td style="white-space:nowrap">${p.durum==='yapildi'&&bakimTur(p.ad)?`<button class="btn sm" data-a="belge" data-t="bakim" data-id="${bakimTur(p.ad)}">Bakım</button> `:''}<button class="btn sm bad icon" data-a="planSil" data-id="${p.id}" aria-label="${esc(p.ad)} işlemini sil">✕</button></td></tr>`).join('')}
+  ${k.plan.map(p=>`<tr><td class="mono">${esc(p.dis||'—')}</td><td>${esc(p.ad)}</td><td>${esc(p.hekim||'')}</td><td><button class="btn sm" data-a="planDurum" data-id="${p.id}" aria-label="Durumu değiştir: ${p.durum==='yapildi'?'Yapıldı':'Planlandı'}">${p.durum==='yapildi'?`<span class="pill ok">✓ Yapıldı ${p.tarih?kisa(p.tarih):''}</span>`:'<span class="pill warn">Planlandı</span>'}</button></td><td class="num"><label style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)" for="pf_${p.id}">Ücret</label><input id="pf_${p.id}" data-pf="${p.id}" type="number" min="0" step="50" value="${p.fiyat}" style="width:110px;text-align:right;min-height:40px;border:1px solid var(--line);border-radius:8px;background:var(--bg);padding:4px 8px"></td><td style="white-space:nowrap">${p.durum==='yapildi'&&bakimTur(p.ad)?`<button class="btn sm" data-a="belge" data-t="bakim" data-id="${bakimTur(p.ad)}">Bakım</button><button class="btn sm icon" data-a="belgeYaz" data-t="bakim" data-id="${bakimTur(p.ad)}" aria-label="Yazdır" title="Yazdır">${PRN}</button> `:''}<button class="btn sm bad icon" data-a="planSil" data-id="${p.id}" aria-label="${esc(p.ad)} işlemini sil">✕</button></td></tr>`).join('')}
   </tbody><tfoot><tr><td colspan="4">Toplam (yapılan ${TL(yap)})</td><td class="num">${TL(top)}</td><td></td></tr></tfoot></table></div>`:'<div class="empty">Henüz işlem yok. "+ İşlem ekle" ya da diş şemasından bir dişe dokunarak ekleyin.</div>'}
   ${S.ayar.ornekFiyat?'<p class="note">Fiyatlar örnektir. Ayarlar → Fiyat listesi bölümünden kliniğin tarifesini girin.</p>':''}`;
 }
@@ -798,14 +819,14 @@ function hRontgen(k){
 function hOnam(k){
   return `<div class="row"><h2 style="flex:1">Onam formları</h2><button class="btn sm pri" data-a="onamYeni">+ Yeni onam (imzalı)</button></div>
   <p class="note">Form metinleri Ayarlar → Onam şablonları bölümünden düzenlenir. Metinler örnektir; kliniğin hukuk danışmanı ya da Türk Diş Hekimleri Birliği formlarıyla karşılaştırın.</p>
-  ${k.onamlar.length?'<div class="list">'+k.onamlar.slice().reverse().map(o=>`<article class="card one"><div class="who"><strong>${esc(o.baslik)}</strong>${o.imza?'<span class="pill ok">İmzalı</span>':'<span class="pill warn">İmzasız</span>'}<span class="muted" style="font-size:13px">${kisaYil(o.tarih)} · ${esc(o.hekim)}</span></div><div class="acts"><button class="btn sm" data-a="belge" data-t="onam" data-id="${o.id}">${ico.doc}Çıktı (PDF)</button></div></article>`).join('')+'</div>':'<div class="empty">Bu hastanın onam formu yok.</div>'}`;
+  ${k.onamlar.length?'<div class="list">'+k.onamlar.slice().reverse().map(o=>`<article class="card one"><div class="who"><strong>${esc(o.baslik)}</strong>${o.imza?'<span class="pill ok">İmzalı</span>':'<span class="pill warn">İmzasız</span>'}<span class="muted" style="font-size:13px">${kisaYil(o.tarih)} · ${esc(o.hekim)}</span></div><div class="acts"><button class="btn sm" data-a="belge" data-t="onam" data-id="${o.id}">${ico.doc}Çıktı (PDF)</button><button class="btn sm" data-a="belgeYaz" data-t="onam" data-id="${o.id}">${PRN}Yazdır</button></div></article>`).join('')+'</div>':'<div class="empty">Bu hastanın onam formu yok.</div>'}`;
 }
 function hOdeme(k){
   const v=vadeler(k),op=k.odemePlan;const DD={odendi:['Ödendi','ok'],gecikti:['Gecikti','bad'],kismi:['Kısmi','warn'],bekliyor:['Bekliyor','']};
   return `<div class="stats"><div class="stat"><b>${TL(borcToplam(k))}</b><span>${op?'ödeme planı tutarı':'tedavi planı toplamı'}</span></div><div class="stat"><b>${TL(odenen(k))}</b><span>ödenen</span></div><div class="stat"><b style="color:${kalan(k)>0?'var(--warn)':'inherit'}">${TL(kalan(k))}</b><span>kalan</span></div><div class="stat"><b style="color:${v.some(x=>x.d==='gecikti')?'var(--bad)':'inherit'}">${TL(v.filter(x=>x.d==='gecikti').reduce((s,x)=>s+x.kalan,0))}</b><span>vadesi geçen</span></div></div>
-  <div class="row"><button class="btn pri" data-a="tahsilat">+ Tahsilat al</button><button class="btn" data-a="odemePlani">${op?'Ödeme planını düzenle':'Ödeme planı oluştur'}</button>${op?`<button class="btn" data-a="belge" data-t="odeme">${ico.doc}Ödeme planı çıktısı</button>`:''}</div>
+  <div class="row"><button class="btn pri" data-a="tahsilat">+ Tahsilat al</button><button class="btn" data-a="odemePlani">${op?'Ödeme planını düzenle':'Ödeme planı oluştur'}</button>${op?`<button class="btn" data-a="belge" data-t="odeme">${ico.doc}Ödeme planı çıktısı</button><button class="btn sm" data-a="belgeYaz" data-t="odeme">${PRN}Yazdır</button>`:''}</div>
   ${op?`<section class="panel"><h2>Ödeme planı</h2><div class="tablebox" style="overflow-x:auto"><table class="t"><thead><tr><th></th><th>Vade</th><th class="num">Tutar</th><th class="num">Ödenen</th><th>Durum</th><th></th></tr></thead><tbody>${v.map(x=>`<tr><td>${x.ad}</td><td class="mono">${tamTarih(x.vade)}</td><td class="num">${TL(x.tutar)}</td><td class="num">${TL(x.odenen)}</td><td><span class="pill ${DD[x.d][1]}">${DD[x.d][0]}</span></td><td>${x.d==='gecikti'||x.d==='bekliyor'&&x.vade<=addDays(TODAY,3)?waBtn(waLink(k.tel,doldur(S.ayar.tplOdeme,null,k,{vade:tamTarih(x.vade),tutar:TL(x.kalan)})),'Hatırlat'):''}</td></tr>`).join('')}</tbody></table></div></section>`:''}
-  <section class="panel"><h2>Tahsilatlar</h2>${k.tahsilat.length?'<div class="tablebox" style="overflow-x:auto"><table class="t"><thead><tr><th>Makbuz</th><th>Tarih</th><th>Yöntem</th><th>Açıklama</th><th class="num">Tutar</th><th></th></tr></thead><tbody>'+k.tahsilat.slice().reverse().map(t=>`<tr><td class="mono">${t.no}</td><td class="mono">${tamTarih(t.tarih)}</td><td>${esc(t.yontem)}</td><td>${esc(t.aciklama||'')}</td><td class="num">${TL(t.tutar)}</td><td><div class="row" style="flex-wrap:nowrap;gap:6px"><button class="btn sm" data-a="belge" data-t="makbuz" data-id="${t.id}">${ico.doc}Makbuz</button><button class="btn sm${t.fat?"":" pri"}" data-a="fatura" data-id="${t.id}">${t.fat?esc(t.fat.no):"e-Belge"}</button></div></td></tr>`).join('')+'</tbody></table></div>':'<p class="muted" style="margin:0">Henüz tahsilat yok.</p>'}
+  <section class="panel"><h2>Tahsilatlar</h2>${k.tahsilat.length?'<div class="tablebox" style="overflow-x:auto"><table class="t"><thead><tr><th>Makbuz</th><th>Tarih</th><th>Yöntem</th><th>Açıklama</th><th class="num">Tutar</th><th></th></tr></thead><tbody>'+k.tahsilat.slice().reverse().map(t=>`<tr><td class="mono">${t.no}</td><td class="mono">${tamTarih(t.tarih)}</td><td>${esc(t.yontem)}</td><td>${esc(t.aciklama||'')}</td><td class="num">${TL(t.tutar)}</td><td><div class="row" style="flex-wrap:nowrap;gap:6px"><button class="btn sm" data-a="belge" data-t="makbuz" data-id="${t.id}">${ico.doc}Makbuz</button><button class="btn sm icon" data-a="belgeYaz" data-t="makbuz" data-id="${t.id}" aria-label="Yazdır" title="Yazdır">${PRN}</button><button class="btn sm${t.fat?"":" pri"}" data-a="fatura" data-id="${t.id}">${t.fat?esc(t.fat.no):"e-Belge"}</button></div></td></tr>`).join('')+'</tbody></table></div>':'<p class="muted" style="margin:0">Henüz tahsilat yok.</p>'}
   <p class="note">Tahsilat makbuzu mali belge değildir; fatura / e-Arşiv fatura ayrıca düzenlenmelidir.</p></section>`;
 }
 
@@ -819,7 +840,7 @@ function vKasaTahsilat(){
   return demoBant()+`<div class="daybar"><h1>Kasa</h1><label class="f" for="kasaGun" style="flex-direction:row;align-items:center;gap:8px">Gün<input id="kasaGun" type="date" value="${g}" style="width:auto"></label></div><!--KSEG-->
   <div class="stats"><div class="stat"><b>${TL(gun.reduce((s,x)=>s+x.t.tutar,0))}</b><span>${g===TODAY?'bugün':kisa(g)} toplam</span></div>${yt.map(([y,v])=>`<div class="stat"><b>${TL(v)}</b><span>${y}</span></div>`).join('')}</div>
   <p class="muted" style="margin:0;font-size:14px">${AY[parse(g).getMonth()]} ayı toplamı: <b class="num">${TL(ay)}</b></p>
-  <section class="panel"><h2>Günün tahsilatları</h2>${gun.length?'<div class="tablebox" style="overflow-x:auto"><table class="t"><thead><tr><th>Makbuz</th><th>Hasta</th><th>Yöntem</th><th class="num">Tutar</th><th></th></tr></thead><tbody>'+gun.map(x=>`<tr><td class="mono">${x.t.no}</td><td><button class="linkish" style="font-size:14px" data-a="hastaAc" data-id="${x.k.id}" data-h="odeme">${esc(x.k.ad)}</button></td><td>${esc(x.t.yontem)}</td><td class="num">${TL(x.t.tutar)}</td><td><button class="btn sm" data-a="belge" data-t="makbuz" data-id="${x.t.id}" data-k="${x.k.id}">${ico.doc}Makbuz</button></td></tr>`).join('')+'</tbody></table></div>':'<p class="muted" style="margin:0">Bu gün tahsilat yok.</p>'}</section>
+  <section class="panel"><h2>Günün tahsilatları</h2>${gun.length?'<div class="tablebox" style="overflow-x:auto"><table class="t"><thead><tr><th>Makbuz</th><th>Hasta</th><th>Yöntem</th><th class="num">Tutar</th><th></th></tr></thead><tbody>'+gun.map(x=>`<tr><td class="mono">${x.t.no}</td><td><button class="linkish" style="font-size:14px" data-a="hastaAc" data-id="${x.k.id}" data-h="odeme">${esc(x.k.ad)}</button></td><td>${esc(x.t.yontem)}</td><td class="num">${TL(x.t.tutar)}</td><td><button class="btn sm" data-a="belge" data-t="makbuz" data-id="${x.t.id}" data-k="${x.k.id}">${ico.doc}Makbuz</button><button class="btn sm icon" data-a="belgeYaz" data-t="makbuz" data-id="${x.t.id}" data-k="${x.k.id}" aria-label="Yazdır" title="Yazdır">${PRN}</button></td></tr>`).join('')+'</tbody></table></div>':'<p class="muted" style="margin:0">Bu gün tahsilat yok.</p>'}</section>
   <section class="panel"><h2>Vadesi geçen taksitler (${gc.length})</h2><p class="note">Var olan bir borç için ödeme hatırlatması bilgilendirme mesajıdır; içine kampanya eklemeyin.</p>${gc.length?'<div class="list">'+gc.map(({k,v})=>`<article class="card one"><div class="who"><button class="linkish" data-a="hastaAc" data-id="${k.id}" data-h="odeme">${esc(k.ad)}</button><span class="pill bad">${v.ad} · ${tamTarih(v.vade)}</span><b class="num">${TL(v.kalan)}</b></div><div class="acts">${waBtn(waLink(k.tel,doldur(S.ayar.tplOdeme,null,k,{vade:tamTarih(v.vade),tutar:TL(v.kalan)})),'Ödeme hatırlat')}<button class="btn sm" data-a="tahsilat" data-k="${k.id}">Tahsilat al</button></div></article>`).join('')+'</div>':'<p class="muted" style="margin:0">Geciken taksit yok.</p>'}</section>`;
 }
 
@@ -838,7 +859,7 @@ function vAyarlar(){
     <label class="f" for="aSlot">Randevu aralığı<select id="aSlot" name="slot">${[15,20,30,45,60].map(v=>`<option value="${v}" ${v==a.slot?'selected':''}>${v} dakika</option>`).join('')}</select></label></div>
     <h2 style="margin-top:6px">Mesaj şablonları</h2>
     <p class="note">Alanlar: {ad} {tarih} {saat} {hekim} {klinik}; ödeme mesajında {vade} {tutar}. Bilgilendirme mesajlarına kampanya ya da tanıtım eklemeyin; eklenirse ticari ileti sayılır.</p>
-    <label class="f" for="aTH">Randevu hatırlatma (bilgilendirme)<textarea id="aTH" name="tplHat">${esc(a.tplHat)}</textarea></label>
+    <label class="f" for="aTH">Randevu hatırlatma (bilgilendirme)<textarea id="aTH" name="tplHat" rows="9">${esc(tplHatAl())}</textarea></label><p class="note" style="margin-top:-4px">{onay} yerine hastanın "Geleceğim / Başka gün / Gelemeyeceğim" linki gelir. *yıldız* arası WhatsApp'ta kalın görünür.</p>
     <label class="f" for="aTY">Gelmeyen / iptal eden (bilgilendirme)<textarea id="aTY" name="tplYeni">${esc(a.tplYeni)}</textarea></label>
     <label class="f" for="aTE">Erken saat önerisi (bilgilendirme)<textarea id="aTE" name="tplErken">${esc(a.tplErken)}</textarea></label>
     <label class="f" for="aTO">Ödeme hatırlatma (bilgilendirme)<textarea id="aTO" name="tplOdeme">${esc(a.tplOdeme)}</textarea></label>
@@ -941,8 +962,8 @@ function belgeAc(tur,k,id){
   sheet(`<header><h2>Çıktı önizleme</h2><button class="btn icon" data-a="kapat" aria-label="Kapat">✕</button></header>
   ${/^\[.*\]$/.test(String(S.ayar.adres).trim())||/^\[.*\]$/.test(String(S.ayar.telefon).trim())||S.ayar.klinik==='Kliniğim'?`<div class="warnbox">Çıktının başlığında klinik adı, adresi ya da telefonu henüz örnek. <button class="btn sm" data-a="ayarGit">Ayarlar'da düzelt</button></div>`:''}
   <div class="docbox"><div class="doc" id="docPrev">${b.html}</div></div>
-  <div class="row"><button class="btn pri" data-a="pdf">${ico.doc}PDF olarak kaydet</button><button class="btn" data-a="htmlKaydet">Yazdırılabilir HTML kaydet</button>${b.wa?waBtn(b.wa,'WhatsApp ile gönder'):''}</div>
-  <p class="note">Kaydedilen PDF'i açıp yazıcıdan çıkarabilirsiniz. Bu sayfa yazdırma penceresini doğrudan açamaz.</p>`,true);
+  <div class="row"><button class="btn pri" data-a="belgeYazdir">${PRN}Yazdır</button><button class="btn" data-a="pdf">${ico.doc}PDF olarak kaydet</button><button class="btn" data-a="htmlKaydet">Yazdırılabilir HTML kaydet</button>${b.wa?waBtn(b.wa,'WhatsApp ile gönder'):''}</div>
+  <p class="note">Yazdır'a basınca yazıcı seçme penceresi açılır; oradan "PDF olarak kaydet" de seçilebilir.</p>`,true);
   const box=document.querySelector('.docbox'),d=document.getElementById('docPrev');const sc=Math.min(1,(box.clientWidth-24)/794);d.style.zoom=sc;
 }
 let DL=null;
@@ -971,6 +992,14 @@ async function pdfYap(){
     r.innerHTML='';await kaydetDosya(dosyaAdi(b.ad)+'.pdf',pdf.output('arraybuffer'));
   }catch(e){r.innerHTML='';toast('PDF oluşturulamadı; HTML olarak kaydedin')}
 }
+function baskiBaslat(belge){const h=document.documentElement;if(!h.hasAttribute('data-bt'))h.setAttribute('data-bt',h.getAttribute('data-theme')||'-');h.setAttribute('data-theme','light');document.body.classList.toggle('baskiBelge',!!belge);
+  try{window.print()}catch(e){toast('Yazdırma penceresi açılamadı')}}
+function baskiBitir(){const h=document.documentElement,o=h.getAttribute('data-bt');if(o!==null){if(o==='-')h.removeAttribute('data-theme');else h.setAttribute('data-theme',o);h.removeAttribute('data-bt')}document.body.classList.remove('baskiBelge');const b=document.getElementById('baski');if(b)b.innerHTML='';const p=document.getElementById('baskiSayfa');if(p)p.remove()}
+addEventListener('afterprint',()=>setTimeout(baskiBitir,300));
+function belgeYazdir(){const B=U.belge;if(!B)return;const k=kisi(B.kid),b=belgeHTML(B.tur,k,B.id);document.getElementById('baski').innerHTML=`<div class="doc">${b.html}</div>`;
+  if(!document.getElementById('baskiSayfa')){const st=document.createElement('style');st.id='baskiSayfa';st.textContent='@page{size:A4;margin:6mm 0}';document.head.appendChild(st)}baskiBaslat(true)}
+function ekranYazdir(){const ad={gun:U.gorunum==='hafta'?'Haftalık takvim':'Günlük randevular',hastalar:'Hastalar',listeler:'Listeler',kasa:'Kasa',raporlar:'Raporlar',ayarlar:'Ayarlar'}[U.tab]||'';const hk=U.tab==='hastalar'&&U.hasta?kisi(U.hasta):null;
+  document.getElementById('baskiUst').textContent=S.ayar.klinik+' · '+(hk?'Hasta: '+hk.ad:ad)+' · '+new Date().toLocaleString('tr-TR',{day:'numeric',month:'long',year:'numeric',hour:'2-digit',minute:'2-digit'});baskiBaslat(false)}
 function htmlYap(){const B=U.belge;const k=kisi(B.kid),b=belgeHTML(B.tur,k,B.id);
   kaydetDosya(dosyaAdi(b.ad)+'.html',`<!doctype html><html lang="tr"><head><meta charset="utf-8"><title>${esc(b.ad)}</title><style>@page{size:A4;margin:0}html{-webkit-text-size-adjust:100%;text-size-adjust:100%}body{margin:0;background:#fff}</style></head><body>${b.html}</body></html>`)}
 
@@ -986,7 +1015,7 @@ function menu(id){
   <div class="menu">
     <button class="btn" data-a="duzenle" data-id="${id}">Randevuyu düzenle / saati değiştir</button>
     <button class="btn" data-a="hastaAc" data-id="${r.kisiId}">Hasta kartı</button>
-    ${aktif(r)&&r.durum!=='cikti'&&r.tarih>=TODAY?`<button class="btn" data-a="belge" data-t="kart" data-id="${id}" data-k="${r.kisiId}">Randevu kartı (PDF / WhatsApp)</button>`:''}
+    ${aktif(r)&&r.durum!=='cikti'&&r.tarih>=TODAY?`<button class="btn" data-a="belge" data-t="kart" data-id="${id}" data-k="${r.kisiId}">Randevu kartı (PDF / WhatsApp)</button><button class="btn sm" data-a="belgeYaz" data-t="kart" data-id="${id}" data-k="${r.kisiId}">${PRN}Yazdır</button>`:''}
     ${i>0?`<button class="btn" data-a="geri" data-id="${id}">Durumu bir adım geri al (${DURUM[ZINCIR[i-1]][0]})</button>`:''}
     ${r.durum==='gelmedi'?`<button class="btn" data-a="durumSet" data-v="bekliyor" data-id="${id}">"Gelmedi" işaretini kaldır</button>`:''}
     ${aktif(r)&&r.tarih<=TODAY&&r.durum!=='cikti'?`<button class="btn bad" data-a="durumSet" data-v="gelmedi" data-id="${id}">Gelmedi olarak işaretle</button>`:''}
@@ -1236,15 +1265,24 @@ const DISHATA='Sunucuya ulaşılamadı. Program claude.ai içinde açıksa dış
 /* ---------- WhatsApp Business Platform (tam otomatik) ---------- */
 const WAAPI={calisiyor:false,
   hazir(){const s=SIR.al();return S.ayar.entegrasyon.wa.mod==='api'&&!!s.waId&&!!s.waToken},
-  async gonder(tel,par,sablon){const s=SIR.al(),E=S.ayar.entegrasyon.wa,n=telDuz(tel);if(!n)throw{m:'Telefon numarası geçersiz'};
-    const body={messaging_product:'whatsapp',to:n,type:'template',template:{name:sablon||E.sablon||'randevu_hatirlatma',language:{code:'tr'},components:[{type:'body',parameters:par.map(t=>({type:'text',text:String(t)}))}]}};
+  async gonder(tel,par,sablon,ek){const s=SIR.al(),E=S.ayar.entegrasyon.wa,n=telDuz(tel);if(!n)throw{m:'Telefon numarası geçersiz'};
+    const body={messaging_product:'whatsapp',to:n,type:'template',template:{name:sablon||E.sablon||'randevu_hatirlatma',language:{code:'tr'},components:[].concat(ek&&ek.gorsel?[{type:'header',parameters:[{type:'image',image:{link:ek.gorsel}}]}]:[],[{type:'body',parameters:par.map(t=>({type:'text',text:String(t)}))}],ek&&ek.dugme?[{type:'button',sub_type:'url',index:'0',parameters:[{type:'text',text:String(ek.dugme)}]}]:[])}};
     let r;try{r=await fetch('https://graph.facebook.com/v21.0/'+encodeURIComponent(s.waId)+'/messages',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+s.waToken},body:JSON.stringify(body)})}catch(e){throw{m:DISHATA}}
     const j=await r.json().catch(()=>({}));if(!r.ok)throw{m:(j.error&&j.error.message)||('Meta hata kodu '+r.status)};return j},
-  async otoHatirlat(simdi){if(!this.hazir()||this.calisiyor||!S.ayar.oto.hatirlatma)return;if(!simdi&&saatSimdi()<S.ayar.oto.hatSaat)return;this.calisiyor=true;let n=0,h=0,son='';
-    try{for(const r of lOnay().filter(r=>r.durum==='bekliyor'&&!r.hat)){const k=kisi(r.kisiId);if(!k||!telDuz(k.tel))continue;
-        if(!(await FB.talep('h-'+r.id+'-'+r.tarih))){r.hat=r.hat||'gonderildi';continue}const par=[String(k.ad).split(' ')[0],tamTarih(r.tarih),r.saat,S.ayar.klinik];if(S.ayar.entegrasyon.wa.linkAlan){const ol=onayLink(r);if(ol)par.push(ol)}
-        try{await this.gonder(k.tel,par);r.hat='gonderildi';S.mesaj['h:'+r.id]=TODAY;n++}catch(e){h++;son=e.m;if(son===DISHATA)break}}
-      if(n)kaydet(n+' hatırlatma WhatsApp ile otomatik gönderildi');if(h)toast(h+' mesaj gönderilemedi: '+son)}finally{this.calisiyor=false}}};
+  ek(r){const E=S.ayar.entegrasyon.wa,o={};if(E.gorsel)o.gorsel=ONAY_GORSEL;if(E.dugme){onayLink(r);if(r.yid)o.dugme=r.yid}return o},
+  par(r,k){const p=[String(k.ad).split(' ')[0],uzun(r.tarih),r.saat,S.ayar.klinik];if(S.ayar.entegrasyon.wa.linkAlan){const ol=onayLink(r);if(ol)p.push(ol)}return p},
+  async otoHatirlat(simdi){if(!this.hazir()||this.calisiyor||!S.ayar.oto.hatirlatma)return;this.calisiyor=true;let n=0,t=0,h=0,son='';
+    try{if(simdi||saatSimdi()>=S.ayar.oto.hatSaat)for(const r of lOnay().filter(r=>r.durum==='bekliyor'&&!r.hat)){const k=kisi(r.kisiId);if(!k||!telDuz(k.tel))continue;
+        if(!(await FB.talep('h-'+r.id+'-'+r.tarih))){r.hat=r.hat||'gonderildi';continue}
+        try{await this.gonder(k.tel,this.par(r,k),null,this.ek(r));r.hat='gonderildi';r.hatZ=Date.now();r.hatN=1;S.mesaj['h:'+r.id]=TODAY;n++}catch(e){h++;son=e.m;if(son===DISHATA)break}}
+      if(son!==DISHATA)for(const r of tekrarAdaylar()){const k=kisi(r.kisiId);if(!k||!telDuz(k.tel))continue;const no=(r.hatN||1)+1;
+        if(!(await FB.talep('h-'+r.id+'-'+r.tarih+'-'+no))){r.hatN=no;r.hatZ=Date.now();continue}
+        try{await this.gonder(k.tel,this.par(r,k),null,this.ek(r));r.hatN=no;r.hatZ=Date.now();t++}catch(e){h++;son=e.m;if(son===DISHATA)break}}
+      if(n)kaydet(n+' hatırlatma WhatsApp ile otomatik gönderildi');if(t)kaydet(t+' hastaya yanıt gelmediği için tekrar hatırlatma gönderildi');if(h)toast(h+' mesaj gönderilemedi: '+son)}finally{this.calisiyor=false}}};
+function tekrarAdaylar(){const O=S.ayar.oto,ts=Number(O.tekrar??4),tm=Number(O.tekrarMax??2),sa=saatSimdi(),now=Date.now();if(!O.hatirlatma||!(ts>0)||!(tm>0)||sa<'09:00'||sa>='21:00')return[];
+  return S.randevular.filter(r=>r.durum==='bekliyor'&&r.hat==='gonderildi'&&r.hatZ&&(r.hatN||1)<=tm&&aktif(r)&&(r.tarih>TODAY||(r.tarih===TODAY&&r.saat>sa))&&now-r.hatZ>=ts*36e5)}
+function yanitsizIsaretle(){const O=S.ayar.oto,ts=Number(O.tekrar??4),tm=Number(O.tekrarMax??2),now=Date.now();let d=0;
+  S.randevular.forEach(r=>{if(r.durum==='bekliyor'&&r.hat==='gonderildi'&&r.hatZ&&tm>0&&ts>0&&(r.hatN||1)>tm&&now-r.hatZ>=ts*36e5&&r.tarih>=TODAY){r.hat='yanityok';d++}});if(d)save();return d}
 
 /* ---------- Röntgen köprüsü (klasör izleme) ---------- */
 const kDuz=x=>String(x||'').toLocaleLowerCase('tr').replace(/ı/g,'i').normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9]/g,'');
@@ -1617,8 +1655,12 @@ const TKV={
         r.gcal=ev.id;r.gh=h;n++}
       save();if(elle||n)toast(n?`Google Takvim: ${n} randevu güncellendi`:'Google Takvim güncel')}
     catch(e){if(elle)toast(DRV.hata(e))}finally{this.calisiyor=false}}};
-function onayLink(r){if(!FB.aktif())return'';if(!r.yid){r.yid=Array.from(crypto.getRandomValues(new Uint8Array(15)),b=>'abcdefghijkmnpqrstuvwxyz23456789'[b%32]).join('');save()}FB.yanitYaz(r).catch(()=>{});return location.origin+location.pathname+'?y='+r.yid}
-function hatMesaj(r,k){const T=S.ayar.entegrasyon.takvim,lnk=T.mod!=='kapali'&&T.hastaLink?TKV.link(r,true):'',ol=onayLink(r);let tpl=S.ayar.tplHat;if(ol&&/Onaylamak için .1. yazabilirsiniz/.test(tpl))tpl='Merhaba {ad}, {klinik} randevunuz {tarih} saat {saat}. Gelip gelemeyeceğinizi ya da başka güne almak istediğinizi buradan tek dokunuşla bildirin: {onay}';if(!ol)tpl=tpl.replace(/[^.\n]*\{onay\}[^.\n]*\.?/g,'').trim();let m=doldur(tpl,r,k,{takvim:lnk,onay:ol});if(ol&&!tpl.includes('{onay}'))m+='\n\nGeleceğinizi bildirmek ya da başka güne almak için: '+ol;if(lnk&&!S.ayar.tplHat.includes('{takvim}'))m+='\n\nTakviminize ekleyin: '+lnk;return m}
+const linkKok=()=>/(^|\.)(web\.app|firebaseapp\.com|github\.io)$/.test(location.hostname)?ONAY_KOK+'y/':location.origin+location.pathname+'?y=';
+function onayLink(r){if(!FB.aktif())return'';if(!r.yid){r.yid=Array.from(crypto.getRandomValues(new Uint8Array(15)),b=>'abcdefghijkmnpqrstuvwxyz23456789'[b%32]).join('');save()}FB.yanitYaz(r).catch(()=>{});return linkKok()+r.yid}
+function hatMesaj(r,k){const ol=onayLink(r);let tpl=tplHatAl().replace(/\{takvim\}/g,'');
+  if(!ol)tpl=tpl.replace(/[^\n]*👇[^\n]*/g,'Gelemeyecekseniz lütfen bu mesaja yazın.').replace(/[^\n]*\{onay\}[^\n]*/g,'').replace(/\n{3,}/g,'\n\n');
+  if(!r.hekim)tpl=tpl.replace(/^[^\n{]*\{hekim\}[^\n]*\n?/m,'');
+  let m=doldur(tpl,r,k,{onay:ol});if(ol&&!tpl.includes('{onay}'))m+='\n\nGelecek misiniz? Tek dokunuşla yanıtlayın 👇\n'+ol;return m.trim()}
 
 /* ---------- Kurulum sihirbazı ---------- */
 const KADIM=['Klinik','Fiyatlar','Bağlantılar','Otomasyon','Bitti'];
@@ -1641,8 +1683,24 @@ function vKurulum(){const a=U.kadim;
     ${card('wa','WhatsApp','Randevu hatırlatma, gelmeyene yeni gün, ödeme ve kontrol mesajları.',`<label class="f" for="iWm">Gönderim yöntemi<select id="iWm" name="wamod"><option value="link" ${E.wa.mod==='link'?'selected':''}>Tek dokunuşla (WhatsApp açılır, siz gönderirsiniz) — kurulum gerekmez</option><option value="api" ${E.wa.mod==='api'?'selected':''}>Tam otomatik (WhatsApp Business Platform) — Meta hesabı gerekir</option></select></label>
       <div class="grid2"><label class="f" for="iWn">Klinik WhatsApp numarası<input id="iWn" name="wanum" inputmode="tel" value="${esc(E.wa.numara)}" placeholder="0532 …"></label><label class="f" for="iWs">Onaylı hatırlatma şablonu adı<input id="iWs" name="wasab" value="${esc(E.wa.sablon)}" placeholder="randevu_hatirlatma"></label></div>
       <div class="grid2"><label class="f" for="iWi">Telefon numarası kimliği (Phone number ID)<input id="iWi" name="waid" inputmode="numeric" autocomplete="off" value="${esc(SIR.al().waId||'')}" placeholder="1234567890…"></label><label class="f" for="iWt">Erişim anahtarı (kalıcı token)<input id="iWt" name="watok" type="password" autocomplete="off" value="${esc(SIR.al().waToken||'')}"></label></div>
-      <p class="note">Tam otomatikte program açıkken her gün hatırlatma saatinde yarının randevularına kendiliğinden mesaj gider. Meta'da onaylatacağınız şablon 4 alan almalı: {{1}} ad, {{2}} tarih, {{3}} saat, {{4}} klinik. Örnek: "Merhaba {{1}}, {{2}} saat {{3}} randevunuzu hatırlatırız. {{4}}". Mesaj başına Meta ücreti vardır.${FB.mod()?' Bilgiler kliniğin ortak hesabında saklanır; programı açık olan herhangi bir cihaz mesajları gönderir, aynı mesaj iki kez gitmez.':''}</p>
-      <label class="chk" for="iWl"><input type="checkbox" id="iWl" name="walink" ${E.wa.linkAlan?'checked':''}><span>Şablonumda 5. alan var: {{5}} = hastanın "Geleceğim / Gelemeyeceğim / Başka gün" linki</span></label>
+      <p class="note">Tam otomatikte program açıkken her gün hatırlatma saatinde yarının randevularına kendiliğinden mesaj gider; hasta linkten yanıt vermezse Otomasyonlar'daki aralıkla tekrar hatırlatılır. Mesaj başına Meta ücreti olabilir.${FB.mod()?' Bilgiler kliniğin ortak hesabında saklanır; programı açık olan herhangi bir cihaz mesajları gönderir, aynı mesaj iki kez gitmez.':''}</p>
+      <label class="chk" for="iWd"><input type="checkbox" id="iWd" name="wadugme" ${E.wa.dugme?'checked':''}><span>Şablonumda <b>"Randevumu yanıtla"</b> düğmesi var (önerilen — link görünmez, düğme çıkar)</span></label>
+      <label class="chk" for="iWg"><input type="checkbox" id="iWg" name="wagorsel" ${E.wa.gorsel?'checked':''}><span>Şablonumda görsel başlık var (program randevu görselini kendisi koyar)</span></label>
+      <label class="chk" for="iWl"><input type="checkbox" id="iWl" name="walink" ${E.wa.linkAlan?'checked':''}><span>Şablonumda 5. alan var: {{5}} = yanıt linki (düğme yoksa)</span></label>
+      <details class="note"><summary style="cursor:pointer;font-weight:600">Meta'da hazırlanacak şablon (kopyalayın)</summary><pre style="white-space:pre-wrap;font:13px/1.5 var(--f-mono);background:var(--surface2);padding:10px 12px;border-radius:10px;user-select:all;margin:8px 0 0">Ad: randevu_hatirlatma
+Kategori: Yardımcı program (Utility) · Dil: Türkçe
+Başlık: Görsel
+Gövde:
+Merhaba {{1}},
+
+🗓️ *{{2}}*
+🕒 *{{3}}*
+
+{{4}} randevunuzu hatırlatırız. Gelip gelemeyeceğinizi aşağıdaki düğmeyle tek dokunuşla bildirin.
+Alt bilgi: Randevu Masası
+Düğme: Web sitesini ziyaret et
+  Metin: Randevumu yanıtla
+  Adres (dinamik): ${ONAY_KOK}y/{{1}}</pre></details>
       <div class="row"><button class="btn sm" type="button" data-a="waTest">Kliniğin numarasına deneme mesajı gönder</button></div>`)}
     ${card('xr','Röntgen köprüsü','Röntgen yazılımının kaydettiği görüntüleri hasta kartına kendiliğinden aktarır.',`<label class="chk" for="iXa"><input type="checkbox" id="iXa" name="xakt" ${E.kopru.aktif?'checked':''}><span>Köprüyü kullanacağım</span></label>
       <div class="grid2"><label class="f" for="iXc">Cihaz / yazılım<input id="iXc" name="xcih" list="cihazList" value="${esc(E.kopru.cihaz)}"></label><label class="f" for="iXk">Dışa aktarım klasörü<input id="iXk" name="xkla" value="${esc(E.kopru.klasor)}" placeholder="C:\\Rontgen\\Disa-aktarim"></label></div>
@@ -1668,13 +1726,13 @@ function vKurulum(){const a=U.kadim;
       <details><summary class="muted" style="font-size:13px;cursor:pointer;min-height:32px;display:flex;align-items:center">Entegratöre otomatik gönderim</summary><div class="grid2"><label class="f" for="iFa">Entegratör API adresi<input id="iFa" name="fturl" inputmode="url" value="${esc(E.fatura.url||'')}" placeholder="https://…"></label><label class="f" for="iFy">API anahtarı<input id="iFy" name="ftkey" type="password" autocomplete="off" value="${esc(SIR.al().ftKey||'')}"></label></div><p class="note">Adres girilirse "Entegratöre gönder" düğmesi belgeyi (UBL-TR XML ve bilgiler) bu adrese yollar. Entegratörünüz bu adresi ve anahtarı verir.</p></details>
       <p class="note">KDV oranını ve belge türünü mali müşavirinize teyit ettirin. Resmî imza ve numara onayı GİB / entegratör tarafında yapılır.</p>`)}
     ${card('tk','Google Takvim','Randevular Google Takvim\'de de görünür.',`<label class="f" for="iTm">Yöntem<select id="iTm" name="tkmod"><option value="kapali" ${E.takvim.mod==='kapali'?'selected':''}>Kapalı</option><option value="link" ${E.takvim.mod==='link'?'selected':''}>Tek dokunuşla ekle + toplu takvim dosyası — kurulum gerekmez</option><option value="oto" ${E.takvim.mod==='oto'?'selected':''}>${FB.mod()?'Otomatik: kendi Google Takvim\'ime (telefonda da görünür)':'Otomatik eşitleme (Google ile giriş, kendi sunucunuzda)'}</option></select></label>${FB.mod()?`<div class="row"><button class="btn sm pri" type="button" data-a="takvimBagla">${DRV.dd().takvimOn?'Google Takvim\'i yeniden bağla':'Google Takvim\'imi bağla'}</button>${DRV.dd().takvimOn?'<button class="btn sm" type="button" data-a="takvimKes">Takvim bağlantısını kaldır</button>':''}<span class="muted" style="font-size:13px">${DRV.dd().takvimOn?(DRV.dd().eposta?esc(DRV.dd().eposta)+' takvimine yazılıyor':'Bağlı'):'Bağlı değil'}</span></div><p class="note" style="margin:0">Her kullanıcı kendi Google hesabını bağlar; randevular o kişinin telefonundaki Google Takvim uygulamasında "Randevu Masası" takvimi olarak görünür. Google güvenlik için yaklaşık saatte bir onay ister: program açıkken üstte çıkan düğmeye bir kez dokunmak yeter.</p>`:''}
-      <div class="grid2"><label class="f" for="iTa">Takvimde hasta adı<select id="iTa" name="tkad"><option value="bas" ${E.takvim.ad==='bas'?'selected':''}>Baş harfler (A. Y.)</option><option value="tam" ${E.takvim.ad==='tam'?'selected':''}>Ad soyad</option></select></label><label class="chk" for="iTh" style="align-self:end"><input type="checkbox" id="iTh" name="tkhl" ${E.takvim.hastaLink?'checked':''}><span>Hatırlatma mesajına "takviminize ekleyin" bağlantısı koy</span></label></div>
+      <div class="grid2"><label class="f" for="iTa">Takvimde hasta adı<select id="iTa" name="tkad"><option value="bas" ${E.takvim.ad==='bas'?'selected':''}>Baş harfler (A. Y.)</option><option value="tam" ${E.takvim.ad==='tam'?'selected':''}>Ad soyad</option></select></label></div>
       <p class="note">Otomatik eşitlemede program Google Takvim'inizde "Randevu Masası" adlı ayrı bir takvim açar ve yalnızca onu yönetir; diğer takvimlerinize dokunmaz. Yeni, değişen ve iptal edilen randevular kendiliğinden güncellenir.</p>`)}
     ${card('dh','Tescilli yazılım (e-Nabız)','e-Nabız veri gönderimi Bakanlık listesindeki yazılımdan yapılır; bu panel onun yanında çalışır.',`<label class="f" for="iDh">Kullandığınız yazılım<input id="iDh" name="dhbs" list="dhbsList" value="${esc(E.dhbs.ad)}"></label><datalist id="dhbsList">${['DentalBulut','Dental Asistanım','Asistdent','Dr.DENTES'].map(x=>`<option value="${x}">`).join('')}</datalist>`)}
     </div><div class="row"><button class="btn" type="button" data-a="kadim" data-v="2">Geri</button><button class="btn pri" type="submit">Kaydet ve devam</button></div></form>`}
   if(a===4){const T=(id,t,acik,ek)=>`<label class="tg" for="o_${id}"><input type="checkbox" id="o_${id}" name="${id}" ${O[id]?'checked':''}><div><b>${t}</b><p class="note">${acik}</p>${ek||''}</div></label>`;
     b=`<form id="kz4" class="panel"><h2>Otomatik işler</h2><p class="note">Açtığınız işler her gün Gün ekranında "Bugünün işleri" listesine kendiliğinden düşer; tek dokunuşla sırayla gönderilir. WhatsApp tam otomatik moda geçince mesajlar insan beklemeden gider.</p>
-    <div class="list">${T('hatirlatma','Yarınki randevulara hatırlatma','Bilgilendirme mesajı; izin gerekmez.',`<label class="f" for="o_hs" style="max-width:200px">Gönderim saati<input id="o_hs" name="hatSaat" type="time" value="${O.hatSaat}"></label>`)}
+    <div class="list">${T('hatirlatma','Yarınki randevulara hatırlatma','Bilgilendirme mesajı; izin gerekmez.',`<label class="f" for="o_hs" style="max-width:200px">Gönderim saati<input id="o_hs" name="hatSaat" type="time" value="${O.hatSaat}"></label><div class="grid2"><label class="f" for="o_tk">Yanıt gelmezse tekrar<select id="o_tk" name="tekrar">${[0,2,3,4,6,12].map(v=>`<option value="${v}" ${Number(O.tekrar??4)===v?'selected':''}>${v?v+' saatte bir':'Tekrar etme'}</option>`).join('')}</select></label><label class="f" for="o_tm">En çok kaç kez<select id="o_tm" name="tekrarMax">${[1,2,3,5].map(v=>`<option value="${v}" ${Number(O.tekrarMax??2)===v?'selected':''}>${v} kez</option>`).join('')}</select></label></div><p class="note" style="margin:0">Hasta linkten yanıt verince tekrar durur. Tekrarlar 09:00–21:00 arasında gider; hâlâ yanıt yoksa randevu "Yanıt yok" olarak işaretlenir.</p>`)}
     ${T('gelmedi','Gelmeyen hastaya yeni gün sorma','Randevusuna gelmeyen ve yeni randevusu olmayan hastalar.')}
     ${T('taksit','Geciken taksit hatırlatması','Vadesi geçen taksitler; aynı taksit için en fazla haftada bir.')}
     ${T('kontrol','6 aylık kontrol daveti','Ticari ileti: yalnızca izni olan ve İYS kaydı yapılmış hastalara.')}
@@ -1697,6 +1755,7 @@ function vKurulum(){const a=U.kadim;
 const gunFark=(a,b)=>Math.round((parse(b)-parse(a))/864e5);
 function otoListe(tur){const O=S.ayar.oto,M=S.mesaj,yil=TODAY.slice(0,4);
   if(tur==='hat')return lOnay().filter(r=>r.durum==='bekliyor').map(r=>{const k=kisi(r.kisiId);return{key:'h:'+r.id,rid:r.id,ad:k.ad,alt:kisa(r.tarih)+' '+r.saat,href:waLink(k.tel,hatMesaj(r,k)),done:!!r.hat}});
+  if(tur==='tekrar')return tekrarAdaylar().map(r=>{const k=kisi(r.kisiId),key='r:'+r.id+':'+((r.hatN||1)+1);return{key,rid:r.id,ad:k.ad,alt:kisa(r.tarih)+' '+r.saat+' · '+(r.hatN||1)+' hatırlatmaya yanıt yok',href:waLink(k.tel,hatMesaj(r,k)),done:!!S.mesaj[key]}});
   if(tur==='gelmedi')return S.randevular.filter(r=>r.durum==='gelmedi'&&r.tarih>=addDays(TODAY,-3)&&!r.kapandi&&!sonraki(r.kisiId)).map(r=>{const k=kisi(r.kisiId);return{key:'g:'+r.id,ad:k.ad,alt:'Gelmedi · '+kisa(r.tarih),href:waLink(k.tel,doldur(S.ayar.tplYeni,r,k)),done:!!M['g:'+r.id]}});
   if(tur==='taksit')return gecikenler().map(({k,v})=>{const key='t:'+k.id+':'+v.vade;return{key,ad:k.ad,alt:v.ad+' · '+TL(v.kalan),href:waLink(k.tel,doldur(S.ayar.tplOdeme,null,k,{vade:tamTarih(v.vade),tutar:TL(v.kalan)})),done:!!M[key]&&gunFark(M[key],TODAY)<7}});
   if(tur==='kontrol')return lKontrol().filter(k=>izinDurum(k)[0]==='var').slice(0,15).map(k=>{const key='k:'+k.id;return{key,ad:k.ad,alt:'Son geliş '+kisaYil(sonGelis(k.id)),href:waLink(k.tel,doldur(S.ayar.tplKontrol,null,k)),done:!!M[key]&&gunFark(M[key],TODAY)<60}});
@@ -1709,6 +1768,7 @@ function otoPanel(){const O=S.ayar.oto,ro=[];const ac=t=>otoListe(t).filter(x=>!
   if(KOPRU.durum==='izin')ro.push(`<div class="it"><span class="tx">Röntgen köprüsü durdu (tarayıcı yeniden izin istiyor)</span><button class="btn sm pri" data-a="kopruIzin">Yeniden başlat</button></div>`);
   if(KOPRU.bek.length)ro.push(`<div class="it"><span class="tx"><b>${KOPRU.bek.length}</b> yeni röntgenin hastası bulunamadı</span><button class="btn sm pri" data-a="kopruEsle">Eşleştir</button></div>`);
   if(!WAAPI.hazir())ekle(O.hatirlatma,ac('hat'),`<b>${ac('hat')}</b> yarınki randevuya hatırlatma gönderilmedi${saatGeldi?'':` <span class="muted">(önerilen saat ${O.hatSaat})</span>`}`,`<button class="btn sm ${saatGeldi?'pri':''}" data-a="toplu" data-v="hat">Sırayla gönder</button>`);
+  if(!WAAPI.hazir())ekle(O.hatirlatma,ac('tekrar'),`<b>${ac('tekrar')}</b> hasta hatırlatmaya yanıt vermedi`,`<button class="btn sm pri" data-a="toplu" data-v="tekrar">Tekrar hatırlat</button>`);
   ekle(O.gelmedi,ac('gelmedi'),`<b>${ac('gelmedi')}</b> gelmeyen hastaya yeni gün sorulmadı`,`<button class="btn sm" data-a="toplu" data-v="gelmedi">Sırayla gönder</button>`);
   ekle(O.taksit,ac('taksit'),`<b>${ac('taksit')}</b> geciken taksit için hatırlatma bekliyor`,`<button class="btn sm" data-a="toplu" data-v="taksit">Sırayla gönder</button>`);
   ekle(O.kontrol,ac('kontrol'),`<b>${ac('kontrol')}</b> izinli hastanın kontrol zamanı geldi`,`<button class="btn sm" data-a="toplu" data-v="kontrol">Sırayla gönder</button>`);
@@ -1718,7 +1778,7 @@ function otoPanel(){const O=S.ayar.oto,ro=[];const ac=t=>otoListe(t).filter(x=>!
   const st=S.stok.filter(x=>x.miktar<=x.kritik).length;ekle(O.stok,st,`<b>${st}</b> malzeme kritik seviyede`,`<button class="btn sm" data-a="git" data-tab="kasa" data-kseg="stok">Stoku aç</button>`);
   const yg=!S.sonYedek||gunFark(S.sonYedek,TODAY)>=O.yedekGun;ekle(O.yedek,yg?1:0,S.sonYedek?`Son yedek <b>${gunFark(S.sonYedek,TODAY)} gün</b> önce alındı`:'Henüz <b>yedek alınmadı</b>',`${S.ayar.entegrasyon.drive.mod!=='kapali'?'<button class="btn sm pri" data-a="driveYedek">Drive\'a yedekle</button>':''}<button class="btn sm" data-a="yedekAl">Dosyaya yedek al</button>`);
   return `<section class="panel" aria-labelledby="otoB"><div class="row"><h2 id="otoB" style="flex:1">Bugünün işleri</h2><button class="btn sm" data-a="kurulumAc" data-v="4">Otomasyon ayarları</button></div>${ro.length?`<div class="oto">${ro.join('')}</div>`:'<p class="muted" style="margin:0">Bugün için bekleyen iş yok.</p>'}</section>`}
-const TOPLU={hat:'Yarınki randevulara hatırlatma',gelmedi:'Gelmeyen hastalara yeni gün',taksit:'Geciken taksit hatırlatması',kontrol:'Kontrol daveti',dogum:'Doğum günü kutlaması'};
+const TOPLU={hat:'Yarınki randevulara hatırlatma',tekrar:'Yanıt vermeyenlere tekrar hatırlatma',gelmedi:'Gelmeyen hastalara yeni gün',taksit:'Geciken taksit hatırlatması',kontrol:'Kontrol daveti',dogum:'Doğum günü kutlaması'};
 function topluForm(tur){U.toplu=tur;const L=otoListe(tur),sira=L.findIndex(x=>!x.done);
   sheet(`<header><h2>${TOPLU[tur]}</h2>${kapatBtn}</header>
   <p class="note">Sıradaki hastanın düğmesine basın; WhatsApp hazır mesajla açılır, gönderip buraya dönün. Gönderilenler işaretlenir.${S.ayar.entegrasyon.wa.mod==='api'?' Tam otomatik mod seçili: sunucu kurulunca bu liste insan beklemeden gönderilir.':''}</p>
@@ -1810,9 +1870,9 @@ function belgeListe(k){const L=[];
   return L.sort((a,b)=>(b.tarih||'9').localeCompare(a.tarih||'9'))}
 function hBelgeler(k){const L=belgeListe(k),turler=[...new Set(L.map(x=>x.tur))];const f=U.bFiltre&&turler.includes(U.bFiltre)?U.bFiltre:'';const G=f?L.filter(x=>x.tur===f):L;
   return `<div class="row"><h2 style="flex:1">Belge geçmişi</h2><span class="muted" style="font-size:13px">${L.length} belge</span></div>
-  <div class="row"><label class="f" for="bkSec" style="flex-direction:row;align-items:center;gap:8px">Bakım talimatı<select id="bkSec" style="width:auto">${Object.entries(BAKIM).map(([id,b])=>`<option value="${id}">${b.t}</option>`).join('')}</select></label><button class="btn sm" data-a="bakimAc">Hazırla</button>${sonraki(k.id)?`<button class="btn sm" data-a="belge" data-t="kart" data-id="${sonraki(k.id).id}" data-k="${k.id}">Randevu kartı</button>`:''}</div>
+  <div class="row"><label class="f" for="bkSec" style="flex-direction:row;align-items:center;gap:8px">Bakım talimatı<select id="bkSec" style="width:auto">${Object.entries(BAKIM).map(([id,b])=>`<option value="${id}">${b.t}</option>`).join('')}</select></label><button class="btn sm" data-a="bakimAc">Hazırla</button>${sonraki(k.id)?`<button class="btn sm" data-a="belge" data-t="kart" data-id="${sonraki(k.id).id}" data-k="${k.id}">Randevu kartı</button><button class="btn sm" data-a="belgeYaz" data-t="kart" data-id="${sonraki(k.id).id}" data-k="${k.id}">${PRN}Yazdır</button>`:''}</div>
   ${turler.length>1?`<div class="seg" role="group" aria-label="Belge türü"><button class="${f?'':'on'}" data-a="bFiltre" data-v="">Tümü</button>${turler.map(t=>`<button class="${f===t?'on':''}" data-a="bFiltre" data-v="${esc(t)}">${esc(t)}</button>`).join('')}</div>`:''}
-  ${G.length?`<div class="tablebox" style="overflow-x:auto"><table class="t"><thead><tr><th>Tarih</th><th>Belge</th><th>Ayrıntı</th><th></th></tr></thead><tbody>${G.map(x=>`<tr><td class="mono">${x.tarih?tamTarih(x.tarih):'—'}</td><td>${esc(x.tur)}</td><td>${esc(x.ad)}</td><td><button class="btn sm" data-a="belge" data-t="${x.t}" data-id="${x.id}" data-k="${k.id}">${ico.doc}Aç / PDF</button></td></tr>`).join('')}</tbody></table></div>`:'<div class="empty">Bu hastaya ait belge yok.</div>'}
+  ${G.length?`<div class="tablebox" style="overflow-x:auto"><table class="t"><thead><tr><th>Tarih</th><th>Belge</th><th>Ayrıntı</th><th></th></tr></thead><tbody>${G.map(x=>`<tr><td class="mono">${x.tarih?tamTarih(x.tarih):'—'}</td><td>${esc(x.tur)}</td><td>${esc(x.ad)}</td><td><button class="btn sm" data-a="belge" data-t="${x.t}" data-id="${x.id}" data-k="${k.id}">${ico.doc}Aç / PDF</button><button class="btn sm icon" data-a="belgeYaz" data-t="${x.t}" data-id="${x.id}" data-k="${k.id}" aria-label="Yazdır" title="Yazdır">${PRN}</button></td></tr>`).join('')}</tbody></table></div>`:'<div class="empty">Bu hastaya ait belge yok.</div>'}
   <p class="note">Tedavi planı ve ödeme planı çıktıları her açılışta güncel bilgilerle yeniden oluşturulur.</p>`}
 
 /* ---------- Laboratuvar ---------- */
@@ -1820,7 +1880,7 @@ const LD={gonderildi:['Gönderildi','info'],geldi:['Geldi','ok'],takildi:['Takı
 function labKart(l,hastaGoster){const k=kisi(l.kisiId);const gec=l.durum==='gonderildi'&&l.beklenen<TODAY;
   return `<article class="card one"><div class="who">${hastaGoster?`<button class="linkish" data-a="hastaAc" data-id="${k.id}" data-h="lab">${esc(k.ad)}</button>`:''}<strong>${esc(l.is)}${l.dis?' · '+esc(l.dis):''}</strong><span class="pill ${LD[l.durum][1]}">${LD[l.durum][0]}</span>${gec?'<span class="pill bad">Gecikti</span>':''}</div>
   <div class="sub"><span>${esc(l.firma)}</span><span>Gönderim ${kisa(l.gonderim)}</span><span>Teslim ${kisa(l.beklenen)}</span><span class="num">${TL(l.ucret)}</span><span>${esc(l.hekim)}</span></div>
-  <div class="acts">${l.durum==='gonderildi'?`<button class="btn sm pri" data-a="labDurum" data-v="geldi" data-id="${l.id}">Geldi</button>`:''}${l.durum==='geldi'?`<button class="btn sm" data-a="labDurum" data-v="takildi" data-id="${l.id}">Takıldı</button>`:''}<button class="btn sm" data-a="belge" data-t="lab" data-id="${l.id}" data-k="${k.id}">${ico.doc}İş emri</button><button class="btn sm" data-a="labDuzenle" data-id="${l.id}">Düzenle</button></div></article>`}
+  <div class="acts">${l.durum==='gonderildi'?`<button class="btn sm pri" data-a="labDurum" data-v="geldi" data-id="${l.id}">Geldi</button>`:''}${l.durum==='geldi'?`<button class="btn sm" data-a="labDurum" data-v="takildi" data-id="${l.id}">Takıldı</button>`:''}<button class="btn sm" data-a="belge" data-t="lab" data-id="${l.id}" data-k="${k.id}">${ico.doc}İş emri</button><button class="btn sm" data-a="belgeYaz" data-t="lab" data-id="${l.id}" data-k="${k.id}">${PRN}Yazdır</button><button class="btn sm" data-a="labDuzenle" data-id="${l.id}">Düzenle</button></div></article>`}
 function vLab(){const l=S.lab.filter(x=>x.durum!=='takildi').sort((a,b)=>a.beklenen.localeCompare(b.beklenen));
   return `<p class="note">Laboratuvara gönderilen ve henüz hastaya takılmamış işler. Geciken işler kırmızıyla işaretlenir; laboratuvarı arayıp randevuyu buna göre ayarlayın.</p>${l.length?'<div class="list">'+l.map(x=>labKart(x,true)).join('')+'</div>':'<div class="empty">Laboratuvarda bekleyen iş yok. Hasta kartı → Laboratuvar bölümünden iş ekleyin.</div>'}`}
 function hLab(k){const l=S.lab.filter(x=>x.kisiId===k.id).sort((a,b)=>b.gonderim.localeCompare(a.gonderim));
@@ -1841,7 +1901,7 @@ function labForm(kid,id){const k=kisi(kid),l=id?S.lab.find(x=>x.id===id):null;
   <label class="f" for="lbS">Durum<select id="lbS" name="durum">${Object.entries(LD).map(([a,b])=>`<option value="${a}" ${a===v.durum?'selected':''}>${b[0]}</option>`).join('')}</select></label></div>
   <label class="f" for="lbN">Not<textarea id="lbN" name="not">${esc(v.not)}</textarea></label>
   <datalist id="islemList2">${S.ayar.fiyatlar.map(f=>`<option value="${esc(f.ad)}">`).join('')}</datalist>
-  <div class="row"><button class="btn pri" type="submit">Kaydet</button>${id?`<button class="btn" type="button" data-a="belge" data-t="lab" data-id="${id}" data-k="${kid}">${ico.doc}İş emri (PDF)</button>`:''}<button class="btn" type="button" data-a="kapat">Vazgeç</button></div></form>`);
+  <div class="row"><button class="btn pri" type="submit">Kaydet</button>${id?`<button class="btn" type="button" data-a="belge" data-t="lab" data-id="${id}" data-k="${kid}">${ico.doc}İş emri (PDF)</button><button class="btn sm" type="button" data-a="belgeYaz" data-t="lab" data-id="${id}" data-k="${kid}">${PRN}Yazdır</button>`:''}<button class="btn" type="button" data-a="kapat">Vazgeç</button></div></form>`);
 }
 
 /* ---------- Doğum günleri ---------- */
@@ -1852,7 +1912,7 @@ function vDogum(){const l=dogumYakin();
 /* ---------- Reçete ---------- */
 function hRecete(k){return `<div class="row"><h2 style="flex:1">Reçeteler</h2><button class="btn sm pri" data-a="receteYeni">+ Yeni reçete</button></div>
   <p class="note">Hazır reçeteler ve dozlar örnektir; hekim her reçetede ilaç, doz ve süreyi kontrol eder. İlaç listesi Ayarlar'dan düzenlenir. Resmî reçete gerektiğinde e-Reçete sistemi kullanılır.</p>
-  ${k.receteler.length?'<div class="list">'+k.receteler.slice().reverse().map(r=>`<article class="card one"><div class="who"><strong>${kisaYil(r.tarih)}</strong><span class="muted">${esc(r.hekim)}</span>${r.tani?`<span class="pill">${esc(r.tani)}</span>`:''}${r.uyari&&r.uyari.length?'<span class="pill warn">Uyarı onaylandı</span>':''}</div><div class="sub">${r.ilaclar.map(i=>esc(i.ad)).join(' · ')}</div><div class="acts"><button class="btn sm" data-a="belge" data-t="recete" data-id="${r.id}">${ico.doc}Çıktı (PDF)</button></div></article>`).join('')+'</div>':'<div class="empty">Bu hastaya yazılmış reçete yok.</div>'}`}
+  ${k.receteler.length?'<div class="list">'+k.receteler.slice().reverse().map(r=>`<article class="card one"><div class="who"><strong>${kisaYil(r.tarih)}</strong><span class="muted">${esc(r.hekim)}</span>${r.tani?`<span class="pill">${esc(r.tani)}</span>`:''}${r.uyari&&r.uyari.length?'<span class="pill warn">Uyarı onaylandı</span>':''}</div><div class="sub">${r.ilaclar.map(i=>esc(i.ad)).join(' · ')}</div><div class="acts"><button class="btn sm" data-a="belge" data-t="recete" data-id="${r.id}">${ico.doc}Çıktı (PDF)</button><button class="btn sm" data-a="belgeYaz" data-t="recete" data-id="${r.id}">${PRN}Yazdır</button></div></article>`).join('')+'</div>':'<div class="empty">Bu hastaya yazılmış reçete yok.</div>'}`}
 function receteForm(){const k=kisi(U.hasta);U.rc=[];
   sheet(`<header><h2>Yeni reçete · ${esc(k.ad)}</h2>${kapatBtn}</header>
   <form id="rcForm" class="list"><div class="grid3"><label class="f" for="rcS">Hazır reçete<select id="rcS" name="sablon"><option value="">Seçin…</option>${S.ayar.receteSablon.map(s=>`<option value="${s.id}">${esc(s.ad)}</option>`).join('')}</select></label>
@@ -1974,13 +2034,13 @@ function vRaporlar(){const {bas,bit}=aralik();
   <div class="seg" role="group" aria-label="Dönem">${sf('3ay','Son 3 ay')}${sf('6ay','Son 6 ay')}${sf('12ay','Son 12 ay')}${sf('yil','Bu yıl')}</div>
   <div class="seg" role="tablist" aria-label="Rapor türü">${sr('genel','Genel bakış')}${sr('hakedis','Hekim hakedişi')}${sr('protokol','Protokol defteri')}</div>`;
   if(U.rseg==='hakedis'){const hk=hakedisHesap(bas,bit);
-    return h+`<div class="row"><button class="btn" data-a="belge" data-t="hakedis">${ico.doc}PDF kaydet</button><button class="btn" data-a="csvHakedis">CSV kaydet</button></div>
+    return h+`<div class="row"><button class="btn" data-a="belge" data-t="hakedis">${ico.doc}PDF kaydet</button><button class="btn sm" data-a="belgeYaz" data-t="hakedis">${PRN}Yazdır</button><button class="btn" data-a="csvHakedis">CSV kaydet</button></div>
     <div class="tablebox" style="overflow-x:auto"><table class="t"><thead><tr><th>Hekim</th><th class="num">İşlem</th><th class="num">Üretim</th><th class="num">Lab maliyeti</th><th class="num">Oran</th><th class="num">Hakediş</th></tr></thead><tbody>${hk.map(x=>`<tr><td><span class="dot" style="background:${renk(x.h)}" aria-hidden="true"></span> ${esc(x.h)}</td><td class="num">${x.adet}</td><td class="num">${TL(x.uretim)}</td><td class="num">${TL(x.lab)}</td><td class="num">%${x.oran}</td><td class="num"><b>${TL(x.hakedis)}</b></td></tr>`).join('')}</tbody><tfoot><tr><td>Toplam</td><td class="num">${sum(hk.map(x=>x.adet))}</td><td class="num">${TL(sum(hk.map(x=>x.uretim)))}</td><td class="num">${TL(sum(hk.map(x=>x.lab)))}</td><td></td><td class="num">${TL(sum(hk.map(x=>x.hakedis)))}</td></tr></tfoot></table></div>
     <p class="note">Hesap: (dönemde yapılan tedavilerin tutarı − o hekimin laboratuvar maliyeti) × hekim oranı. Oranlar Ayarlar → Hekim hakedişi bölümünden değiştirilir.</p>`}
   if(U.rseg==='protokol'){const p=protokolListe(bas,bit);
-    return h+`<div class="row"><button class="btn" data-a="belge" data-t="protokol">${ico.doc}PDF kaydet</button><button class="btn" data-a="csvProtokol">CSV kaydet</button><span class="muted" style="font-size:13px">${p.length} kayıt${p.length>150?' · ekranda son 150 gösteriliyor':''}</span></div>
+    return h+`<div class="row"><button class="btn" data-a="belge" data-t="protokol">${ico.doc}PDF kaydet</button><button class="btn sm" data-a="belgeYaz" data-t="protokol">${PRN}Yazdır</button><button class="btn" data-a="csvProtokol">CSV kaydet</button><span class="muted" style="font-size:13px">${p.length} kayıt${p.length>150?' · ekranda son 150 gösteriliyor':''}</span></div>
     ${p.length?`<div class="tablebox" style="overflow-x:auto"><table class="t"><thead><tr><th class="num">No</th><th>Tarih</th><th>Hasta</th><th class="num">Yaş</th><th>Hekim</th><th>İşlem</th></tr></thead><tbody>${p.slice(-150).reverse().map(x=>`<tr><td class="num">${x.no}</td><td class="mono">${tamTarih(x.tarih)} ${x.saat}</td><td>${esc(x.ad)}</td><td class="num">${x.yas===''?'—':x.yas}</td><td>${esc(x.hekim)}</td><td>${esc(x.islem)}</td></tr>`).join('')}</tbody></table></div>`:'<div class="empty">Bu dönemde tamamlanan randevu yok.</div>'}`}
-  return h+`<div class="row"><button class="btn" data-a="belge" data-t="rapor">${ico.doc}Raporu PDF kaydet</button><button class="btn" data-a="csvRapor">Aylık özet CSV</button></div>`+raporEkran(raporVeri(bas,bit))}
+  return h+`<div class="row"><button class="btn" data-a="belge" data-t="rapor">${ico.doc}Raporu PDF kaydet</button><button class="btn sm" data-a="belgeYaz" data-t="rapor">${PRN}Yazdır</button><button class="btn" data-a="csvRapor">Aylık özet CSV</button></div>`+raporEkran(raporVeri(bas,bit))}
 function tipGoster(e){const v=e.target.closest&&e.target.closest('.viz');document.querySelectorAll('.viz .tip').forEach(t=>{if(t.parentElement!==v)t.hidden=true});if(!v)return;
   const h=e.target.closest('[data-tip]');let t=v.querySelector('.tip');if(!h){if(t)t.hidden=true;return}
   if(!t){t=document.createElement('div');t.className='tip';t.setAttribute('role','status');v.appendChild(t)}
@@ -2021,7 +2081,7 @@ function basGiydir(){const v=document.getElementById('view');if(!v||U.tab==='kur
   const d=SB[U.tab];if(d&&d[0]){const p=document.createElement('p');p.className='sbAlt';p.textContent=d[0];m.appendChild(p)}
   const ms=b.querySelector(':scope > span.muted');if(ms){ms.classList.add('sbAlt');m.appendChild(ms)}
   if(d&&!b.firstElementChild.matches('button')){const i=document.createElement('i');i.className='sbIk';i.setAttribute('aria-hidden','true');i.innerHTML=`<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${d[1]}</svg>`;b.prepend(i)}}
-const HY=new URLSearchParams(location.search).get('y');let HYD=null;
+const HY=new URLSearchParams(location.search).get('y')||(location.pathname.match(/\/y\/([a-z0-9]{6,40})\/?$/)||[])[1]||null;if(HY&&/github\.io$/.test(location.hostname))location.replace(ONAY_KOK+'y/'+HY);let HYD=null;
 function vHastaYanit(){const y=HYD,kab=(b,a,ic)=>`<section class="hos" style="max-width:520px;margin:24px auto"><div class="hosUst"><div class="hosLogo"><svg aria-hidden="true" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></div><p class="hosEt">${esc(y&&y.klinikAd||'Randevu')}</p><h1>${b}</h1><p>${a}</p></div><div class="hosAlt">${ic}</div></section>`;
   if(y===null)return kab('Yükleniyor…','Randevu bilgileriniz getiriliyor.','');if(y===false)return kab('Bağlantı geçersiz','Bu bağlantı bulunamadı ya da süresi dolmuş.','<p class="note">Lütfen kliniği arayın.</p>');
   const tel=y.tel?`<a class="btn" href="tel:${esc(String(y.tel).replace(/[^0-9+]/g,''))}">Kliniği ara: ${esc(y.tel)}</a>`:'';const bilgi=`<p style="font-size:18px;margin:0"><b>${esc(uzun(y.tarih))}</b> · saat <b>${esc(y.saat)}</b></p><p class="muted" style="margin:0">${esc(y.hekim||'')}${y.adres?' · '+esc(y.adres):''}</p>`;
@@ -2030,9 +2090,9 @@ function vHastaYanit(){const y=HYD,kab=(b,a,ic)=>`<section class="hos" style="ma
   return kab('Merhaba '+esc(y.ad||''),'Randevunuza gelebilecek misiniz?',bilgi+`<div class="list" style="margin-top:6px"><button class="btn pri lg" data-a="hyYanit" data-v="geliyor">✓ Geleceğim</button><button class="btn lg" data-a="hyYanit" data-v="baska">Başka bir güne alalım</button><button class="btn bad lg" data-a="hyYanit" data-v="gelmeyecek">Gelemeyeceğim</button></div>${U.hyBaska?`<form id="hyBaskaForm" class="list"><label class="f" for="hyI">Hangi gün ve saatler size uyar? (isteğe bağlı)<textarea id="hyI" name="istek" maxlength="280" placeholder="Örn. Hafta içi akşam 17:00 sonrası"></textarea></label><button class="btn pri" type="submit">Gönder</button></form>`:''}`+tel)}
 async function hyGonder(durum,istek){try{await FB.db.doc('yanitlar/'+HY).update({durum,istek:String(istek||'').slice(0,280),islendi:false,yanit:firebase.firestore.FieldValue.serverTimestamp()});U.hyGonderildi=durum;U.hyBaska=false;HYD.durum=durum;render()}catch(e){toast('Gönderilemedi. İnternet bağlantısını kontrol edip tekrar deneyin.')}}
 function render(){
-  if(HY){const t=document.querySelector('.top');if(t)t.hidden=true;document.querySelector('.nav').hidden=true;document.getElementById('view').innerHTML=vHastaYanit();return}
+  {const yb=document.getElementById('yazBtn');if(yb)yb.hidden=true}if(HY){document.title=(HYD&&HYD.klinikAd)||'Randevu';const t=document.querySelector('.top');if(t)t.hidden=true;document.querySelector('.nav').hidden=true;document.getElementById('view').innerHTML=vHastaYanit();return}
   const fbm=FB.mod();if(fbm?kilitli():((!S.ayar.kullanicilar.length&&!window.__RM_TEST)||kilitli()||U.yeniKod)){document.querySelector('.nav').hidden=true;const kb=document.getElementById('kilitBtn');if(kb)kb.hidden=true;document.getElementById('view').innerHTML=fbm?vFbGiris():vGiris();const p=document.querySelector('#view form input:not([type=hidden])');if(p)p.focus();return}
-  document.querySelector('.nav').hidden=false;{const kb=document.getElementById('kilitBtn');if(kb){kb.hidden=!fbm&&!S.ayar.kullanicilar.length;const u=aktifKul();kb.textContent=u&&innerWidth>=600?kes(u.ad,16)+' · Kilitle':'Kilitle';kb.title=u?u.ad+' · oturumu kilitle':'Kilitle'}}
+  document.querySelector('.nav').hidden=false;{const yb=document.getElementById('yazBtn');if(yb)yb.hidden=false}{const kb=document.getElementById('kilitBtn');if(kb){kb.hidden=!fbm&&!S.ayar.kullanicilar.length;const u=aktifKul();kb.textContent=u&&innerWidth>=600?kes(u.ad,16)+' · Kilitle':'Kilitle';kb.title=u?u.ad+' · oturumu kilitle':'Kilitle'}}
   document.querySelectorAll('.nav [data-t]').forEach(b=>b.hidden=!izinli(b.dataset.t));if(!izinli(U.tab))U.tab='gun';
   document.querySelectorAll('.nav [data-t]').forEach(b=>{b.classList.toggle('on',b.dataset.t===U.tab);if(b.dataset.t===U.tab)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current')});
   document.getElementById('view').innerHTML=({gun:vGun,listeler:vListeler,hastalar:vHastalar,kasa:vKasa,raporlar:vRaporlar,ayarlar:vAyarlar,kurulum:vKurulum}[U.tab]||vGun)();
@@ -2068,7 +2128,7 @@ document.addEventListener('click',e=>{
     case'kapat':kapat();render();break;
     case'onayla':r.durum='onaylandi';r.zaman.onaylandi=saatSimdi();r.hat=r.hat||'gonderildi';kaydet('Onay kaydedildi');break;
     case'hatSonuc':r.hat=el.dataset.v;kaydet(HAT[el.dataset.v][0]+' olarak kaydedildi');break;
-    case'hatGonder':r.hat='gonderildi';save();setTimeout(()=>{render();toast('WhatsApp açıldı; hatırlatıldı olarak işaretlendi')},60);break;
+    case'hatGonder':r.hatN=r.hat==='gonderildi'&&r.hatZ?(r.hatN||1)+1:1;r.hat='gonderildi';r.hatZ=Date.now();save();setTimeout(()=>{render();toast('WhatsApp açıldı; hatırlatıldı olarak işaretlendi')},60);break;
     case'iptal':{if(U.onayBekle!=='r'+id){U.onayBekle='r'+id;el.textContent='Emin misiniz? İptal et';return}r.durum='iptal';kapat();kaydet('Randevu iptal edildi; yeniden randevu listesine eklendi');break}
     case'ilkBos':{const f=document.getElementById('rForm');const b=ilkBos(f.tarih.value,f.hekim.value,f.sure.value);const bi=document.getElementById('rBosBilgi');if(b){f.tarih.value=b.tarih;saatDoldur(b.saat);bi.textContent='İlk boş: '+kisa(b.tarih)+' '+b.saat}else bi.textContent='60 gün içinde boş saat yok';break}
     case'talepRandevu':{const t=S.talepler.find(x=>x.id===id);randevuForm({ad:t.ad,tel:t.tel,talepId:t.id});break}
@@ -2091,6 +2151,9 @@ document.addEventListener('click',e=>{
     case'gvSil':{if(U.onayBekle!=='g'+id){U.onayBekle='g'+id;el.textContent='Emin misiniz? Sil';return}const k=H();k.goruntuler=k.goruntuler.filter(x=>x.id!==id);IDB.del(id).catch(()=>{});kapat();kaydet('Görüntü silindi');break}
     case'belge':{const k=el.dataset.k?kisi(el.dataset.k):H();const tur=el.dataset.t;if(tur==='plan'&&!k.plan.length){toast('Tedavi planı boş');return}belgeAc(tur,k,id);break}
     case'pdf':pdfYap();break;
+    case'belgeYazdir':belgeYazdir();break;
+    case'belgeYaz':{const k=el.dataset.k?kisi(el.dataset.k):H();const tur=el.dataset.t;if(tur==='plan'&&!k.plan.length){toast('Tedavi planı boş');return}U.belge={tur,kid:k&&k.id,id};belgeYazdir();break}
+    case'ekranYaz':ekranYazdir();break;
     case'htmlKaydet':htmlYap();break;
     case'fiyatEkle':S.ayar.fiyatlar.push({id:uid(),ad:'Yeni işlem',fiyat:0});kaydet();break;
     case'fiyatSil':S.ayar.fiyatlar=S.ayar.fiyatlar.filter(x=>x.id!==id);kaydet('Satır silindi');break;
@@ -2102,7 +2165,7 @@ document.addEventListener('click',e=>{
     case'driveYedek':driveYedek();break;
     case'waTest':{const fm=document.getElementById('kz3');if(fm)SIR.yaz({waId:fm.waid.value.trim(),waToken:fm.watok.value.trim()});const no=fm?fm.wanum.value:S.ayar.entegrasyon.wa.numara;const sab=fm?fm.wasab.value.trim():S.ayar.entegrasyon.wa.sablon;
       if(!SIR.al().waId||!SIR.al().waToken){toast('Önce telefon numarası kimliğini ve erişim anahtarını yazın');return}if(!telDuz(no)){toast('Kliniğin WhatsApp numarasını yazın');return}
-      toast('Gönderiliyor…');WAAPI.gonder(no,['Deneme',tamTarih(TODAY),saatSimdi(),S.ayar.klinik],sab).then(()=>toast('Deneme mesajı gönderildi')).catch(er=>toast('Gönderilemedi: '+er.m));break}
+      toast('Gönderiliyor…');WAAPI.gonder(no,['Deneme',uzun(TODAY),saatSimdi(),S.ayar.klinik].concat(fm&&fm.walink&&fm.walink.checked&&!(fm.wadugme&&fm.wadugme.checked)?[ONAY_KOK]:[]),sab,{gorsel:fm&&fm.wagorsel&&fm.wagorsel.checked?ONAY_GORSEL:'',dugme:fm&&fm.wadugme&&fm.wadugme.checked?'deneme':''}).then(()=>toast('Deneme mesajı gönderildi')).catch(er=>toast('Gönderilemedi: '+er.m));break}
     case'waOto':WAAPI.otoHatirlat(true);break;
     case'kopruSec':KOPRU.sec();break;
     case'kopruIzin':KOPRU.izinVer();break;
@@ -2144,7 +2207,7 @@ document.addEventListener('click',e=>{
     case'ornekTemizle':{if(U.onayBekle!=='ornekT'){U.onayBekle='ornekT';render();return}S.kisiler.forEach(k=>(k.goruntuler||[]).forEach(g=>IDB.del(g.id).catch(()=>{})));Object.assign(S,{kisiler:[],randevular:[],talepler:[],giderler:[],lab:[],mesaj:{},ornek:false});S.stok=S.stok.map(x=>Object.assign(x,{miktar:0}));U.onayBekle=null;kaydet('Örnek kayıtlar silindi; ayarlar korundu');break}
     case'kopruDosya':{const fm=document.getElementById('kz3');const E=fm?{cihaz:fm.xcih.value.trim(),klasor:fm.xkla.value.trim(),bicim:fm.xbic.value}:S.ayar.entegrasyon.kopru;if(!E.klasor){toast('Önce dışa aktarım klasörünü yazın');return}kaydetDosya('kopru-ayar.json',JSON.stringify({surum:1,klinik:S.ayar.klinik,cihaz:E.cihaz,izlenenKlasor:E.klasor,dosyaAdiBicimi:E.bicim,kontrolSaniye:10},null,2));break}
     case'toplu':topluForm(el.dataset.v);break;
-    case'otoGonder':{const key=el.dataset.key;S.mesaj[key]=TODAY;if(id){const rr=rv(id);if(rr)rr.hat='gonderildi'}save();setTimeout(()=>{topluForm(U.toplu);render()},80);break}
+    case'otoGonder':{const key=el.dataset.key;S.mesaj[key]=TODAY;if(id){const rr=rv(id);if(rr){rr.hat='gonderildi';if(key.startsWith('h:')){rr.hatZ=Date.now();rr.hatN=1}else if(key.startsWith('r:')){rr.hatN=(rr.hatN||1)+1;rr.hatZ=Date.now()}}}save();setTimeout(()=>{topluForm(U.toplu);render()},80);break}
     case'git':U.tab=el.dataset.tab;if(el.dataset.seg)U.seg=el.dataset.seg;if(el.dataset.kseg)U.kseg=el.dataset.kseg;U.hasta=null;render();window.scrollTo(0,0);break;
     case'bakimAc':{const v=(document.getElementById('bkSec')||{}).value;if(v)belgeAc('bakim',H(),v);break}
     case'karsilastir':karsilastir();break;
@@ -2278,8 +2341,8 @@ document.addEventListener('submit',e=>{
   if(f.id==='kz1'){const h=f.hekimler.value.split('\n').map(x=>x.trim()).filter(Boolean);if(!f.klinik.value.trim()){toast('Klinik adını yazın');f.klinik.focus();return}if(!h.length||f.bas.value>=f.bit.value){toast('En az bir hekim girin; kapanış açılıştan sonra olmalı');return}
     hekimAdDegis(S.ayar.hekimler,h);Object.assign(S.ayar,{klinik:f.klinik.value.trim(),adres:f.adres.value.trim()||S.ayar.adres,telefon:f.telefon.value.trim()||S.ayar.telefon,hekimler:h,bas:f.bas.value,bit:f.bit.value,slot:Number(f.slot.value)});U.kadim=2;kaydet('Klinik bilgileri kaydedildi');window.scrollTo(0,0)}
   if(f.id==='kz2'){S.ayar.fiyatlar.forEach(x=>{const i=f['kf_'+x.id];if(i)x.fiyat=Math.max(0,Number(i.value)||0)});S.ayar.ornekFiyat=false;U.kadim=3;kaydet('Fiyatlar kaydedildi');window.scrollTo(0,0)}
-  if(f.id==='kz3'){const E=S.ayar.entegrasyon;E.wa={mod:f.wamod.value,numara:f.wanum.value.trim(),sablon:f.wasab.value.trim()};E.kopru={aktif:f.xakt.checked,cihaz:f.xcih.value.trim(),klasor:f.xkla.value.trim(),bicim:f.xbic.value};E.yedek={saat:f.ysaat.value,hedef:f.yhedef.value.trim()};if(f.dmod){E.drive=Object.assign(E.drive,{mod:f.dmod.value,klasor:f.dkla.value.trim()||'Randevu Masası',istemci:f.dist.value.trim()});if(E.drive.klasor!==E.drive._k){E.drive.klasorId='';E.drive.gorselKlasorId=''}E.drive._k=E.drive.klasor;}E.iys={markaKodu:f.iys.value.trim()};E.fatura={tur:f.fttur.value,vkn:f.ftvkn.value.replace(/\D/g,'').slice(0,11),vd:f.ftvd.value.trim(),unvan:f.ftunv.value.trim(),il:f.ftil.value.trim(),ilce:f.ftilce.value.trim(),kdv:Math.max(0,Math.min(20,Number(f.ftkdv.value)||0)),seri:(f.ftser.value.toUpperCase().replace(/[^A-Z0-9]/g,'')+'RMS').slice(0,3),entegrator:f.fent.value.trim(),url:f.fturl.value.trim()};SIR.yaz({waId:f.waid.value.trim(),waToken:f.watok.value.trim(),ftKey:f.ftkey.value.trim()});E.wa.linkAlan=!!(f.walink&&f.walink.checked);if(FB.mod())FB.waKaydet(f.waid.value.trim(),f.watok.value.trim()).catch(e=>toast(fbHata(e)));E.dhbs={ad:f.dhbs.value.trim()};E.takvim=Object.assign(E.takvim,{mod:f.tkmod.value,ad:f.tkad.value,hastaLink:f.tkhl.checked});U.kadim=4;kaydet('Bağlantılar kaydedildi');window.scrollTo(0,0)}
-  if(f.id==='kz4'){const O=S.ayar.oto;['hatirlatma','gelmedi','taksit','kontrol','dogum','talep','lab','stok','yedek'].forEach(k=>O[k]=f[k].checked);O.hatSaat=f.hatSaat.value||'17:00';O.yedekGun=Math.max(1,Math.min(30,Number(f.yedekGun.value)||7));U.kadim=5;kaydet('Otomasyonlar kaydedildi');window.scrollTo(0,0)}
+  if(f.id==='kz3'){const E=S.ayar.entegrasyon;E.wa={mod:f.wamod.value,numara:f.wanum.value.trim(),sablon:f.wasab.value.trim()};E.kopru={aktif:f.xakt.checked,cihaz:f.xcih.value.trim(),klasor:f.xkla.value.trim(),bicim:f.xbic.value};E.yedek={saat:f.ysaat.value,hedef:f.yhedef.value.trim()};if(f.dmod){E.drive=Object.assign(E.drive,{mod:f.dmod.value,klasor:f.dkla.value.trim()||'Randevu Masası',istemci:f.dist.value.trim()});if(E.drive.klasor!==E.drive._k){E.drive.klasorId='';E.drive.gorselKlasorId=''}E.drive._k=E.drive.klasor;}E.iys={markaKodu:f.iys.value.trim()};E.fatura={tur:f.fttur.value,vkn:f.ftvkn.value.replace(/\D/g,'').slice(0,11),vd:f.ftvd.value.trim(),unvan:f.ftunv.value.trim(),il:f.ftil.value.trim(),ilce:f.ftilce.value.trim(),kdv:Math.max(0,Math.min(20,Number(f.ftkdv.value)||0)),seri:(f.ftser.value.toUpperCase().replace(/[^A-Z0-9]/g,'')+'RMS').slice(0,3),entegrator:f.fent.value.trim(),url:f.fturl.value.trim()};SIR.yaz({waId:f.waid.value.trim(),waToken:f.watok.value.trim(),ftKey:f.ftkey.value.trim()});E.wa.linkAlan=!!(f.walink&&f.walink.checked);E.wa.dugme=!!(f.wadugme&&f.wadugme.checked);E.wa.gorsel=!!(f.wagorsel&&f.wagorsel.checked);if(FB.mod())FB.waKaydet(f.waid.value.trim(),f.watok.value.trim()).catch(e=>toast(fbHata(e)));E.dhbs={ad:f.dhbs.value.trim()};E.takvim=Object.assign(E.takvim,{mod:f.tkmod.value,ad:f.tkad.value,hastaLink:false});U.kadim=4;kaydet('Bağlantılar kaydedildi');window.scrollTo(0,0)}
+  if(f.id==='kz4'){const O=S.ayar.oto;['hatirlatma','gelmedi','taksit','kontrol','dogum','talep','lab','stok','yedek'].forEach(k=>O[k]=f[k].checked);O.hatSaat=f.hatSaat.value||'17:00';if(f.tekrar){O.tekrar=Number(f.tekrar.value)||0;O.tekrarMax=Number(f.tekrarMax.value)||2}O.yedekGun=Math.max(1,Math.min(30,Number(f.yedekGun.value)||7));U.kadim=5;kaydet('Otomasyonlar kaydedildi');window.scrollTo(0,0)}
   if(f.id==='rcForm'){const k=k0();if(!U.rc.length){toast('En az bir ilaç ekleyin');return}const u=rcUyarilar(k);const ok=document.getElementById('rcOk');if(u.length&&!(ok&&ok.checked)){toast('Uyarıyı gördüğünüzü işaretleyin');return}
     const r={id:uid(),tarih:TODAY,hekim:f.hekim.value,tani:f.tani.value.trim(),ilaclar:U.rc.map(x=>{const l=S.ayar.ilaclar.find(y=>y.id===x.id)||{ad:'?'};return{ad:l.ad,kullanim:x.kullanim,kutu:x.kutu}}),uyari:u};
     k.receteler.push(r);save();kapat();render();logla(k.ad+': reçete yazıldı');save();toast('Reçete kaydedildi');belgeAc('recete',k,r.id)}
@@ -2293,14 +2356,14 @@ document.addEventListener('submit',e=>{
   if(f.id==='onamForm'){S.ayar.onamlar.forEach(o=>{const b=f['b_'+o.id],m=f['m_'+o.id];if(b)o.baslik=b.value.trim()||o.baslik;if(m)o.metin=m.value});kaydet('Onam şablonları kaydedildi')}
 });
 if(FB.mod())FB.yukle();
-if(window.__RM_FBTEST)window.__RM={get S(){return S},FB,get U(){return U},kisiBulYaKur,kaydet,render,belgeAc,kisi,ornek,tamamla,onayLink,TKV,WAAPI,SIR,get DRV(){return DRV},set S(v){S=v}};
+if(window.__RM_FBTEST)window.__RM={get S(){return S},FB,get U(){return U},kisiBulYaKur,kaydet,render,belgeAc,kisi,ornek,tamamla,onayLink,TKV,WAAPI,SIR,hatMesaj,tekrarAdaylar,get DRV(){return DRV},set S(v){S=v}};
 render();
 (async()=>{try{const t=await IDB.vget('S');if(t){const v=JSON.parse(t);if(v&&v.ayar&&(v._kayit||0)>LSK){S=tamamla(v);if(U.tab==='kurulum'&&(S.kurulum.tamam||S.kurulum.atla))U.tab='gun';render()}}const tb=await IDB.vget('taban');if(tb)ES.tabanVeri=JSON.parse(tb)}catch(e){}VHAZIR=true;IDB.vput('S',JSON.stringify(S)).catch(()=>{})})();
 setTimeout(()=>{KOPRU.yukle();WAAPI.otoHatirlat()},3000);setInterval(()=>WAAPI.otoHatirlat(),300000);
 setInterval(()=>{if(FB.mod()){if(FB.user&&FB.klinik&&!FB.kilit&&S.ayar.kilitDk&&Date.now()-SON_HAREKET>S.ayar.kilitDk*60000){FB.kilit=true;kapat();render()}return}if(S.ayar.kullanicilar.length&&S.ayar.kilitDk&&U.kul&&Date.now()-SON_HAREKET>S.ayar.kilitDk*60000){U.kul=null;U.kulSec=null;try{sessionStorage.removeItem(KEY+'.kul')}catch(_){}kapat();render()}},15000);
 setTimeout(()=>{if(ES.aktif()){ES.goster('is','Drive: bağlanıyor…');ES.esitle()}if(TKV.aktif())TKV.esitle()},1200);
 setInterval(()=>{const yeni=iso(new Date());if(yeni!==TODAY){const eski=TODAY;TODAY=yeni;if(U.gun===eski)U.gun=yeni;if(U.kasaGun===eski)U.kasaGun=yeni;if(!document.querySelector('.ov'))render()}},30000);
-setInterval(()=>{if(ES.aktif()&&!ES.kirli)ES.esitle();if(TKV.aktif())TKV.esitle();TKV.esitleFb()},60000);
+setInterval(()=>{if(ES.aktif()&&!ES.kirli)ES.esitle();if(TKV.aktif())TKV.esitle();TKV.esitleFb();if(yanitsizIsaretle())render()},60000);
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&ES.aktif())ES.esitle();if(document.visibilityState==='visible'&&FB.aktif())FB.esitle()});
 })();
 </script>
