@@ -8,7 +8,7 @@ cp index.html _site/index.html
 python3 -c "import PIL" 2>/dev/null || pip3 install -q --user pillow
 python3 gorsel.py _site/onay.jpg
 cat > firebase.json <<'J'
-{"hosting":{"public":"_site","rewrites":[{"source":"/y/**","destination":"/index.html"}],"headers":[{"source":"**","headers":[{"key":"Cache-Control","value":"no-cache"}]}]}}
+{"firestore":{"rules":"firestore.rules"},"hosting":{"public":"_site","rewrites":[{"source":"/y/**","destination":"/index.html"}],"headers":[{"source":"**","headers":[{"key":"Cache-Control","value":"no-cache"}]}]}}
 J
-firebase deploy --only hosting --project randevu-masasi --non-interactive
+firebase deploy --only hosting,firestore:rules --project randevu-masasi --non-interactive
 echo "BITTI: https://randevu-masasi.web.app"
