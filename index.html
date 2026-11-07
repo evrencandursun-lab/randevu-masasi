@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="tr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Randevu Masası</title></head><body>
-
+<title>Randevu Masası</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap">
@@ -325,6 +325,8 @@ body{background:radial-gradient(1200px 400px at 50% -200px,var(--brand-soft),tra
 @media (max-width:719px){.stat b{font-size:clamp(16px,4.8vw,20px)}.sayfaBas.daybar [data-a=yeni]{background:linear-gradient(140deg,var(--brand),var(--brand-2));color:var(--brand-ink);border-color:transparent}}
 
 @media (max-width:719px){.sayfaBas{padding:16px;border-radius:18px;gap:10px}.sayfaBas .sbIk{width:40px;height:40px;border-radius:12px}}
+
+.kurtarKod{font-family:var(--f-mono);font-size:clamp(22px,6vw,30px);font-weight:700;letter-spacing:.08em;text-align:center;padding:16px;border-radius:14px;background:var(--surface2);border:2px dashed var(--brand);user-select:all;word-break:break-all}
 </style>
 
 <header class="top">
@@ -590,7 +592,7 @@ function vadeler(k){ // peşinat + taksitler, FIFO ödeme dağıtımı
 }
 function gecikenler(){const out=[];S.kisiler.forEach(k=>vadeler(k).forEach(v=>{if(v.d==='gecikti')out.push({k,v})}));return out.sort((a,b)=>a.v.vade.localeCompare(b.v.vade))}
 let CIHAZ='';try{CIHAZ=localStorage.getItem('randevuMasasi.cihaz')||'';if(!/^[A-Z0-9]{3}$/.test(CIHAZ)){CIHAZ=Math.random().toString(36).slice(2,5).toUpperCase().replace(/[^A-Z0-9]/g,'X').padEnd(3,'X');localStorage.setItem('randevuMasasi.cihaz',CIHAZ)}}catch(e){CIHAZ='C'+String(Date.now()%100).padStart(2,'0')}
-function makbuzNo(tarih){const y=String(parse(tarih).getFullYear());const cok=S.ayar.entegrasyon.drive.mod==='ana';const key=cok?y+'-'+CIHAZ:y;S.sayac[key]=(S.sayac[key]||0)+1;return cok?y+'-'+CIHAZ+'-'+String(S.sayac[key]).padStart(4,'0'):y+'-'+String(S.sayac[key]).padStart(4,'0')}
+function makbuzNo(tarih){const y=String(parse(tarih).getFullYear());const cok=S.ayar.entegrasyon.drive.mod==='ana'||FB.mod();const key=cok?y+'-'+CIHAZ:y;S.sayac[key]=(S.sayac[key]||0)+1;return cok?y+'-'+CIHAZ+'-'+String(S.sayac[key]).padStart(4,'0'):y+'-'+String(S.sayac[key]).padStart(4,'0')}
 
 /* listeler */
 const lOnay=()=>sirala(S.randevular.filter(r=>r.tarih===addDays(TODAY,1)&&aktif(r)));
@@ -856,7 +858,7 @@ function vAyarlar(){
     <div class="row"><button class="btn pri" type="submit">İlaç listesini kaydet</button></div></form>
   <section class="panel"><div class="row"><h2 style="flex:1">Bağlantılar ve otomasyon</h2><button class="btn sm" data-a="kurulumAc" data-v="3">Bağlantıları düzenle</button><button class="btn sm" data-a="kurulumAc" data-v="4">Otomasyonları düzenle</button><button class="btn sm" data-a="kurulumAc" data-v="0">Kurulum sihirbazını baştan aç</button></div>
     <div class="list">${entegrasyonlar().map(e=>`<div class="row" style="flex-wrap:nowrap"><span style="flex:1">${e.t}</span>${durumPill(e.d)}</div>`).join('')}</div></section>
-  ${vKullanicilar()}
+  ${FB.mod()?(FB.user&&FB.klinik?vFbUyeler():''):vKullanicilar()}
   <section class="panel"><h2>Veriler</h2><p class="note">Deneme sürümünde kayıtlar bu cihazın tarayıcısında durur; telefon ve bilgisayar arasında paylaşılmaz. Düzenli yedek alın. Yedeğe röntgen görüntüleri dahil değildir.</p>
     ${S.ayar.entegrasyon.drive.mod!=='kapali'?`<div class="row"><button class="btn pri" data-a="driveYedek">Drive'a yedekle</button>${S.ayar.entegrasyon.drive.mod==='tum'?`<button class="btn" data-a="driveGorsel">Röntgenleri Drive'a gönder (${DRV.bekleyenGorsel().length} yeni)</button>`:''}<span class="muted" style="font-size:13px">${S.sonDrive?`Son Drive yedeği: ${kisaYil(S.sonDrive.tarih)} ${S.sonDrive.saat}`:'Henüz Drive\'a yedek gönderilmedi'}</span></div>`:`<p class="note" style="margin:0">Drive yedeği kapalı. Açmak için: Bağlantıları düzenle → Google Drive.</p>`}
     ${ES.aktif()?`<div class="infobox">Veriler Drive'da tutuluyor; her değişiklik birkaç saniye içinde Drive'a gider, diğer cihazlar dakikada bir ve sayfaya her dönüşte günceller. ${S._es&&S._es.son?'Son eşitleme: '+new Date(S._es.son).toLocaleString('tr-TR',{dateStyle:'short',timeStyle:'short'}):''}</div><div class="row"><button class="btn pri" data-a="esitleSimdi">Şimdi eşitle</button></div>`:''}
@@ -1299,26 +1301,160 @@ function faturaForm(k,tid){const t=k&&k.tahsilat.find(x=>x.id===tid);if(!t)retur
 
 /* ---------- Kullanıcılar, kilit, işlem kaydı ---------- */
 const ROL={yonetici:'Yönetici',hekim:'Hekim',sekreter:'Sekreter'};
-function aktifKul(){return S.ayar.kullanicilar.find(u=>u.id===U.kul)||null}
-function kilitli(){return S.ayar.kullanicilar.length>0&&!aktifKul()}
+/* ---------- Ortak hesap ve ortak panel (Firebase) ---------- */
+const FB={cfg:{apiKey:"AIzaSyDKSIYNKNpch0wAx4jClF5BIdLOC9L0lxo",authDomain:"randevu-masasi.firebaseapp.com",projectId:"randevu-masasi",storageBucket:"randevu-masasi.firebasestorage.app",messagingSenderId:"40007356321",appId:"1:40007356321:web:fd681ed7d321694c4c45e0"},
+  SURUM:'10.14.1',PARCA:700000,
+  izin:!window.__RM_TEST&&!(window.claude&&window.claude.use)&&(location.protocol==='https:'||!!window.__RM_FBTEST),
+  hazir:false,yuklemeHata:false,user:null,klinik:null,klinikAd:'',rol:null,ad:'',kilit:false,cevrimdisi:false,bekle:true,uyeler:[],davetler:[],
+  calisiyor:false,tekrar:false,kirli:false,zaman:null,dinleyici:null,susturma:false,
+  mod(){return this.izin},
+  async yukle(){if(!this.izin)return;try{if(!window.firebase||!window.firebase.firestore){for(const p of['app','auth','firestore'])await new Promise((ok,no)=>{const sc=document.createElement('script');sc.src=`https://www.gstatic.com/firebasejs/${this.SURUM}/firebase-${p}-compat.js`;sc.onload=ok;sc.onerror=no;document.head.appendChild(sc)})}
+      if(!firebase.apps.length)firebase.initializeApp(this.cfg);this.auth=firebase.auth();this.db=firebase.firestore();if(window.__RM_FBTEST)window.__RM_FBTEST(this.auth,this.db);
+      this.hazir=true;this.auth.onAuthStateChanged(u=>this.durum(u).catch(e=>{this.bekle=false;render();toast(fbHata(e))}))}
+    catch(e){this.yuklemeHata=true;this.bekle=false;render()}},
+  async durum(u){this.user=u;this.bekle=true;if(!u){this.temizle();this.bekle=false;render();return}
+    await this.klinikBul();this.bekle=false;if(this.klinik){this.oturumSakla(this._sifre);this._sifre=null;this.dinle();this.esitle()}render()},
+  temizle(){if(this.dinleyici){this.dinleyici();this.dinleyici=null}if(this.uyeDinle){this.uyeDinle();this.uyeDinle=null}this.klinik=null;this.rol=null;this.uyeler=[];this.davetler=[]},
+  ep(){return String((this.user&&this.user.email)||'').toLowerCase()},
+  ref(y){return this.db.doc(y)},
+  async klinikBul(){const u=this.user,db=this.db;let k=null;
+    const d=await this.ref('kullanicilar/'+u.uid).get();k=d.exists?d.data().klinik:null;
+    if(k){const m=await this.ref(`klinikler/${k}/uyeler/${u.uid}`).get().catch(()=>null);if(m&&m.exists){this.rol=m.data().rol;this.ad=m.data().ad||u.displayName||u.email}else k=null}
+    if(!k&&u.emailVerified){const di=await this.ref('davetIndeks/'+this.ep()).get().catch(()=>null);
+      if(di&&di.exists){const{klinik,rol}=di.data();await this.ref(`klinikler/${klinik}/uyeler/${u.uid}`).set({rol,ad:u.displayName||u.email,eposta:this.ep(),katildi:firebase.firestore.FieldValue.serverTimestamp()});
+        await this.ref('kullanicilar/'+u.uid).set({klinik});await di.ref.delete().catch(()=>{});await this.ref(`klinikler/${klinik}/davetler/${this.ep()}`).delete().catch(()=>{});
+        k=klinik;this.rol=rol;this.ad=u.displayName||u.email;S._fb=null}}
+    this.klinik=k;if(k){const kd=await this.ref('klinikler/'+k).get().catch(()=>null);this.klinikAd=kd&&kd.exists?kd.data().ad:''}},
+  async klinikKur(ad){const u=this.user,ref=this.db.collection('klinikler').doc();
+    await ref.set({ad,sahip:u.uid,olustu:firebase.firestore.FieldValue.serverTimestamp()});
+    await ref.collection('uyeler').doc(u.uid).set({rol:'yonetici',ad:u.displayName||u.email,eposta:this.ep()});
+    await this.ref('kullanicilar/'+u.uid).set({klinik:ref.id});
+    if(S.ornek||(S._fb&&S._fb.klinik)){S.kisiler.forEach(k=>(k.goruntuler||[]).forEach(g=>IDB.del(g.id).catch(()=>{})));Object.assign(S,{kisiler:[],randevular:[],talepler:[],giderler:[],lab:[],mesaj:{},ornek:false});S.stok=S.stok.map(x=>Object.assign(x,{miktar:0}))}
+    S.ayar.klinik=ad;S._fb=null;this.klinik=ref.id;this.klinikAd=ad;this.rol='yonetici';this.ad=u.displayName||u.email;this.kirli=true;this.oturumSakla();save();this.dinle();render()},
+  /* oturum: çevrimdışı giriş için bu cihazda tutulur (şifre değil, şifrenin tuzlu özeti) */
+  oturumSakla(sifre){try{const o=JSON.parse(localStorage.getItem('randevuMasasi.fbOturum')||'{}');Object.assign(o,{uid:this.user.uid,eposta:this.ep(),ad:this.ad,rol:this.rol,klinik:this.klinik,klinikAd:this.klinikAd});
+      if(sifre){o.tuz=uid()+uid();pinOzet(o.tuz,sifre).then(h=>{o.ozet=h;localStorage.setItem('randevuMasasi.fbOturum',JSON.stringify(o))})}else localStorage.setItem('randevuMasasi.fbOturum',JSON.stringify(o))}catch(e){}},
+  oturumAl(){try{return JSON.parse(localStorage.getItem('randevuMasasi.fbOturum')||'null')}catch(e){return null}},
+  async cevrimdisiGir(eposta,sifre){const o=this.oturumAl();if(!o||!o.ozet||o.eposta!==String(eposta).trim().toLowerCase())throw{code:'rm/cevrimdisi-yok'};
+    if(await pinOzet(o.tuz,sifre)!==o.ozet)throw{code:'auth/wrong-password'};this.cevrimdisi=true;this.user={uid:o.uid,email:o.eposta,emailVerified:true,displayName:o.ad};this.klinik=o.klinik;this.klinikAd=o.klinikAd;this.rol=o.rol;this.ad=o.ad;this.kilit=false;render()},
+  aktif(){return!!(this.hazir&&this.user&&this.klinik&&!this.cevrimdisi)},
+  metaRef(){return this.ref(`klinikler/${this.klinik}/veri/meta`)},
+  async uzakOku(m){const P=await Promise.all(Array.from({length:m.parca},(_,i)=>this.ref(`klinikler/${this.klinik}/veri/p${i}`).get()));
+    const b64=P.map(p=>p.exists?p.data().d:'').join('');return JSON.parse(await acBayt(b64Bayt(b64)))},
+  async uzakYaz(metin,eski){const z=await sikistir(metin),b64=await baytB64(z.blob),P=[];for(let i=0;i<b64.length;i+=this.PARCA)P.push(b64.slice(i,i+this.PARCA));
+    const yeni=uid()+Date.now().toString(36),mr=this.metaRef();
+    await this.db.runTransaction(async tx=>{const m=await tx.get(mr);const cur=m.exists?m.data().surum:null;if(cur!==eski)throw{code:'rm/yaris'};
+      P.forEach((d,i)=>tx.set(this.ref(`klinikler/${this.klinik}/veri/p${i}`),{d}));tx.set(mr,{surum:yeni,parca:P.length,guncel:firebase.firestore.FieldValue.serverTimestamp(),cihaz:CIHAZ,kim:this.ep()})});return yeni},
+  async esitle(elle){if(!this.aktif())return;if(this.calisiyor){this.tekrar=true;return}this.calisiyor=true;this.goster('is','Eşitleniyor…');
+    try{const m=await this.metaRef().get();const M=m.exists?m.data():null;const st=(S._fb&&S._fb.klinik===this.klinik)?S._fb:{};if(this.kirliMi())this.kirli=true;let degisti=false;
+      if(M&&M.surum!==st.surum){const R=tamamla(await this.uzakOku(M));
+        if(!st.surum){if(!S.ornek&&S.kisiler.length)IDB.vput('fbOncesi',disa()).catch(()=>{});const yerel=S.ayar.kullanicilar;S=R;S.ayar.kullanicilar=yerel;this.kirli=false}else{const{o,cakisma}=birlestir(S,R,st.taban);S=tamamla(o);if(cakisma)toast(cakisma+' kayıt iki cihazda aynı anda değişmişti; bu cihazdaki hali tutuldu')}
+        S._fb={klinik:this.klinik,surum:M.surum,taban:tabanAl(R)};ES.tabanKaydet(R);degisti=true}
+      if(this.kirli||!M||elle){const eski=M?M.surum:null;const metin=disa();this.kirli=false;const yeni=await this.uzakYaz(metin,eski);S._fb={klinik:this.klinik,surum:yeni,taban:tabanAl(S)};this.kirliYaz(false);ES.tabanKaydet(JSON.parse(metin));degisti=true}
+      if(degisti){this.susturma=true;save();this.susturma=false;render()}this.goster('ok','Eşitlendi '+saatSimdi());if(elle)toast('Tüm cihazlarla eşitlendi')}
+    catch(e){if(e&&e.code==='rm/yaris'){this.kirli=true;this.tekrar=true}else{this.goster('hata','Eşitlenemedi');if(elle||!this.uyardi){toast(fbHata(e));this.uyardi=true}this.kirli=true}}
+    finally{this.calisiyor=false;if(this.tekrar){this.tekrar=false;setTimeout(()=>this.esitle(),400)}}},
+  kirliMi(){try{return localStorage.getItem('randevuMasasi.fbKirli')===this.klinik}catch(e){return false}},
+  kirliYaz(v){try{v?localStorage.setItem('randevuMasasi.fbKirli',this.klinik):localStorage.removeItem('randevuMasasi.fbKirli')}catch(e){}},
+  degisti(){if(!this.klinik||this.susturma)return;this.kirliYaz(true);if(!this.aktif())return;this.kirli=true;this.goster('is','Kaydedilecek…');clearTimeout(this.zaman);this.zaman=setTimeout(()=>this.esitle(),1500)},
+  dinle(){if(!this.aktif()||this.dinleyici)return;this.dinleyici=this.metaRef().onSnapshot(s=>{const M=s.exists?s.data():null;if(!s.metadata.hasPendingWrites&&(!M||M.surum!==((S._fb||{}).surum)))this.esitle()},()=>this.goster('hata','Bağlantı yok'));
+    this.uyeDinle=this.db.collection(`klinikler/${this.klinik}/uyeler`).onSnapshot(s=>{this.uyeler=s.docs.map(d=>Object.assign({id:d.id},d.data()));const ben=this.uyeler.find(x=>x.id===this.user.uid);if(!ben){this.cikis();toast('Bu klinikten çıkarıldınız');return}if(ben.rol!==this.rol){this.rol=ben.rol;render()}if(U.tab==='ayarlar')render()},()=>{});
+    if(this.rol==='yonetici')this.db.collection(`klinikler/${this.klinik}/davetler`).onSnapshot(s=>{this.davetler=s.docs.map(d=>Object.assign({id:d.id},d.data()));if(U.tab==='ayarlar')render()},()=>{})},
+  goster(d,metin){const b=document.getElementById('esDurum');if(!b)return;b.hidden=!this.aktif();b.className='es '+({ok:'ok',is:'is',hata:'hata'}[d]||'');b.textContent=metin;b.title='Ortak panel eşitleme durumu — dokunarak şimdi eşitleyin'},
+  async davetEt(eposta,rol){const e=String(eposta).trim().toLowerCase();if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(e))throw{code:'auth/invalid-email'};
+    await this.ref(`klinikler/${this.klinik}/davetler/${e}`).set({rol,davetEden:this.ep(),tarih:firebase.firestore.FieldValue.serverTimestamp()});
+    await this.ref('davetIndeks/'+e).set({klinik:this.klinik,rol})},
+  async davetSil(e){await this.ref(`klinikler/${this.klinik}/davetler/${e}`).delete();await this.ref('davetIndeks/'+e).delete().catch(()=>{})},
+  async rolDegis(id,rol){await this.ref(`klinikler/${this.klinik}/uyeler/${id}`).update({rol})},
+  async uyeCikar(id){await this.ref(`klinikler/${this.klinik}/uyeler/${id}`).delete()},
+  async cikis(sil){U.giris='giris';if(this.aktif()&&this.kirli){clearTimeout(this.zaman);await this.esitle().catch(()=>{})}this.temizle();this.cevrimdisi=false;this.kilit=false;try{localStorage.removeItem('randevuMasasi.fbOturum');localStorage.removeItem('randevuMasasi.fbKirli')}catch(e){}
+    if(sil!==false){S.kisiler.forEach(k=>(k.goruntuler||[]).forEach(g=>IDB.del(g.id).catch(()=>{})));S=ornek();this.susturma=true;save();this.susturma=false}if(this.auth)await this.auth.signOut().catch(()=>{});this.user=null;render()}};
+function fbHata(e){const c=(e&&e.code)||'';const T={'auth/invalid-email':'E-posta adresi geçersiz.','auth/user-not-found':'Bu e-postayla kayıtlı hesap yok.','auth/wrong-password':'Şifre yanlış.','auth/invalid-credential':'E-posta ya da şifre yanlış.','auth/invalid-login-credentials':'E-posta ya da şifre yanlış.','auth/email-already-in-use':'Bu e-postayla zaten bir hesap var. Giriş yapın ya da "Şifremi unuttum"u kullanın.','auth/weak-password':'Şifre en az 8 karakter olmalı.','auth/too-many-requests':'Çok fazla deneme yapıldı. Biraz bekleyip tekrar deneyin.','auth/network-request-failed':'İnternet bağlantısı yok. Bağlantıyı kontrol edin.','permission-denied':'Bu işlem için yetkiniz yok.','unavailable':'Sunucuya ulaşılamadı; internet bağlantısını kontrol edin.','rm/cevrimdisi-yok':'İnternet yok ve bu cihazda daha önce bu hesapla giriş yapılmamış.'};return T[c]||('Bir hata oldu'+(c?' ('+c+')':'')+'.')}
+function fbKabuk(baslik,alt,ic,ikon){return girisKabuk(baslik,alt,ic,ikon)}
+function vFbGiris(){const u=FB.user,m=U.giris||'giris';
+  if(FB.bekle&&!FB.yuklemeHata)return fbKabuk('Bağlanıyor…','Hesabınız kontrol ediliyor.','<p class="muted" style="margin:0">Birkaç saniye sürebilir.</p>');
+  if(FB.yuklemeHata&&!FB.cevrimdisi){const o=FB.oturumAl();return fbKabuk('İnternet yok','Giriş sunucusuna ulaşılamadı.',o&&o.ozet?`<form id="cdForm" class="list"><p class="note">Bu cihazda daha önce <b>${esc(o.eposta)}</b> ile giriş yapılmış. Şifrenizle çevrimdışı devam edebilirsiniz; internet gelince değişiklikler ortak panele gönderilir.</p><input type="hidden" name="eposta" value="${esc(o.eposta)}"><label class="f" for="cdS">Şifre<input id="cdS" name="sifre" type="password" autocomplete="current-password" required></label><div id="gUy" class="warnbox" hidden></div><button class="btn pri lg" type="submit">Çevrimdışı devam et</button></form>`:'<p class="note">İnternet bağlantısını kontrol edip sayfayı yenileyin.</p>')+`<button class="btn" onclick="location.reload()">Yeniden dene</button>`}
+  if(u&&FB.kilit)return fbKabuk('Oturum kilitlendi','Devam etmek için şifrenizi girin.',`<form id="fbKilitForm" class="list"><p class="note" style="margin:0"><b>${esc(FB.ad||u.email)}</b> · ${esc(u.email)}</p><label class="f" for="fkS">Şifre<input id="fkS" name="sifre" type="password" autocomplete="current-password" required></label><div id="gUy" class="warnbox" hidden></div><button class="btn pri lg" type="submit">Kilidi aç →</button></form><div class="row" style="justify-content:space-between"><button class="btn sm" data-a="fbUnuttum">Şifremi unuttum</button><button class="btn sm" data-a="fbCikis">Başka hesapla gir</button></div>`);
+  if(u&&!FB.klinik){const dog=u.emailVerified;
+    return fbKabuk('Kliniğinizi seçin',esc(u.email)+' ile giriş yapıldı.',`<div class="panel" style="box-shadow:none"><h2>Yeni klinik oluştur</h2><p class="note">Kliniğin sahibiyseniz. Siz yönetici olursunuz; çalışanlarınızı e-postayla davet edersiniz.</p><form id="klinikKurForm" class="list"><label class="f" for="kkAd">Klinik adı<input id="kkAd" name="ad" required placeholder="Örn. Dt. Eren Can Dursun Ağız ve Diş Sağlığı"></label><div id="gUy" class="warnbox" hidden></div><button class="btn pri" type="submit">Kliniği oluştur</button></form></div>
+      <div class="panel" style="box-shadow:none"><h2>Davetle katıl</h2>${dog?`<p class="note">Bu e-postaya bir klinikten davet gelmemiş görünüyor. Yöneticinizden <b>${esc(u.email)}</b> adresine davet göndermesini isteyin, sonra "Tekrar kontrol et"e basın.</p><button class="btn" data-a="fbYenile">Tekrar kontrol et</button>`:`<p class="note">Davetle katılmak için önce e-postanızı doğrulayın: <b>${esc(u.email)}</b> adresine gelen bağlantıya tıklayın, sonra aşağıdaki düğmeye basın. Gelmediyse istenmeyen (spam) klasörüne bakın.</p><div class="row"><button class="btn pri" data-a="fbYenile">Doğruladım, kontrol et</button><button class="btn" data-a="fbDogrulamaGonder">Bağlantıyı tekrar gönder</button></div>`}</div>
+      <button class="btn sm" data-a="fbCikis">Çıkış yap</button>`,'<path d="M3 21h18M5 21V8l7-5 7 5v13M9 21v-6h6v6"/>')}
+  const sek=`<div class="seg" role="tablist" aria-label="Giriş seçenekleri"><button role="tab" class="${m==='giris'?'on':''}" data-a="girisMod" data-v="giris">Giriş yap</button><button role="tab" class="${m==='kayit'?'on':''}" data-a="girisMod" data-v="kayit">Kayıt ol</button></div>`;
+  if(m==='unuttum')return fbKabuk('Şifremi unuttum','E-postanıza şifre yenileme bağlantısı göndereceğiz.',`<form id="fbUnuttumForm" class="list"><label class="f" for="fuE">E-posta<input id="fuE" name="eposta" type="email" autocomplete="email" required value="${esc(U.fbEposta||'')}"></label><div id="gUy" class="warnbox" hidden></div><div id="gOk" class="infobox" hidden></div><button class="btn pri lg" type="submit">Bağlantıyı gönder</button></form><button class="btn" data-a="girisMod" data-v="giris">← Girişe dön</button>`,'<circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.7M12 17h.01"/>');
+  if(m==='kayit')return fbKabuk('Hesap oluşturun','Aynı hesapla telefondan da bilgisayardan da aynı panele girersiniz.',sek+`<form id="fbKayitForm" class="list"><label class="f" for="fkAd">Ad soyad<input id="fkAd" name="ad" required autocomplete="name" placeholder="Örn. Dt. Eren Can Dursun"></label><label class="f" for="fkE">E-posta<input id="fkE" name="eposta" type="email" required autocomplete="email"></label><div class="grid2"><label class="f" for="fkS1">Şifre (en az 8 karakter)<input id="fkS1" name="s1" type="password" required autocomplete="new-password" minlength="8"></label><label class="f" for="fkS2">Şifre tekrar<input id="fkS2" name="s2" type="password" required autocomplete="new-password" minlength="8"></label></div><div id="gUy" class="warnbox" hidden></div><button class="btn pri lg" type="submit">Kayıt ol →</button></form><p class="note">Kayıttan sonra yeni klinik oluşturursunuz ya da bir kliniğin davetiyle katılırsınız.</p>`,'<circle cx="9" cy="8" r="4"/><path d="M2 21c0-4 3-6 7-6s7 2 7 6M19 8v6M16 11h6"/>');
+  return fbKabuk('Giriş yap','Kliniğinizin ortak paneline girin.',sek+`<form id="fbGirisForm" class="list"><label class="f" for="fgE">E-posta<input id="fgE" name="eposta" type="email" required autocomplete="email" value="${esc(U.fbEposta||'')}"></label><label class="f" for="fgS">Şifre<input id="fgS" name="sifre" type="password" required autocomplete="current-password"></label><div id="gUy" class="warnbox" hidden></div><button class="btn pri lg" type="submit">Giriş yap →</button></form><div class="row" style="justify-content:space-between"><button class="btn sm" data-a="girisMod" data-v="unuttum">Şifremi unuttum</button><button class="btn sm" data-a="girisMod" data-v="kayit">Hesabın yok mu? Kayıt ol</button></div>`)}
+function vFbUyeler(){const yon=FB.rol==='yonetici';
+  return `<section class="panel"><div class="row"><h2 style="flex:1">Ortak panel ve kullanıcılar</h2><button class="btn sm" data-a="fbCikis">Çıkış yap</button></div>
+  <p class="note"><b>${esc(FB.klinikAd||S.ayar.klinik)}</b> · Siz: ${esc(FB.ad)} (${esc(FB.user.email)}) · ${ROL[FB.rol]||''}. Bu kliniğe kayıtlı herkes hangi cihazdan girerse girsin aynı paneli görür; bir cihazdaki değişiklik saniyeler içinde diğerlerine geçer. Röntgen ve fotoğraflar şimdilik çekildiği cihazda kalır.</p>
+  <div class="list">${FB.uyeler.map(u=>`<div class="row" style="flex-wrap:wrap"><span style="flex:1;min-width:180px"><b>${esc(u.ad||u.eposta)}</b> <span class="muted" style="font-size:13px">${esc(u.eposta||'')}</span>${u.id===FB.user.uid?' <span class="pill ok">siz</span>':''}</span>
+    ${yon&&u.id!==FB.user.uid?`<select data-a="fbRol" data-id="${u.id}" aria-label="${esc(u.ad||'')} rolü" style="width:auto">${['yonetici','hekim','sekreter'].map(r=>`<option value="${r}" ${u.rol===r?'selected':''}>${ROL[r]}</option>`).join('')}</select><button class="btn sm bad" data-a="fbCikar" data-id="${u.id}">${U.onayBekle==='fc'+u.id?'Emin misiniz?':'Çıkar'}</button>`:`<span class="pill">${ROL[u.rol]||''}</span>`}</div>`).join('')}</div>
+  ${yon?`<h2 style="margin-top:4px">Çalışan davet et</h2><form id="fbDavetForm" class="grid3"><label class="f" for="fdE">E-posta<input id="fdE" name="eposta" type="email" required placeholder="sekreter@mail.com"></label><label class="f" for="fdR">Görevi<select id="fdR" name="rol"><option value="sekreter">Sekreter</option><option value="hekim">Hekim</option><option value="yonetici">Yönetici</option></select></label><div class="row" style="align-self:end"><button class="btn pri" type="submit">Davet et</button></div></form>
+  <p class="note">Davet edilen kişi bu programa girip aynı e-postayla <b>Kayıt ol</b> der, e-postasını doğrular ve otomatik olarak bu panele katılır.</p>
+  ${FB.davetler.length?'<div class="list">'+FB.davetler.map(d=>`<div class="row"><span style="flex:1">${esc(d.id)} · ${ROL[d.rol]||''} <span class="pill warn">bekliyor</span></span><button class="btn sm" data-a="fbDavetSil" data-v="${esc(d.id)}">İptal</button></div>`).join('')+'</div>':''}`:''}
+  <label class="f" for="kuDk" style="flex-direction:row;align-items:center;gap:8px">Hareketsiz kalınca kilitle<select id="kuDk" style="width:auto">${[5,10,15,30,0].map(d=>`<option value="${d}" ${S.ayar.kilitDk==d?'selected':''}>${d?d+' dk':'Kapalı'}</option>`).join('')}</select></label></section>`}
+function fbForm(f){if(!['fbGirisForm','fbKayitForm','fbUnuttumForm','fbKilitForm','klinikKurForm','fbDavetForm','cdForm'].includes(f.id))return false;
+  const w=document.getElementById('gUy'),hata=m=>{if(w){w.hidden=false;w.textContent=m}else toast(m)},btn=f.querySelector('button[type=submit]');
+  const is=p=>{if(btn)btn.disabled=true;if(w)w.hidden=true;p.catch(e=>hata(fbHata(e))).finally(()=>{if(btn&&btn.isConnected)btn.disabled=false})};
+  if(!FB.hazir&&f.id!=='cdForm'){hata('Giriş sunucusu yüklenemedi; internet bağlantısını kontrol edip sayfayı yenileyin.');return true}
+  if(f.id==='fbGirisForm'){const e=f.eposta.value.trim();U.fbEposta=e;FB._sifre=f.sifre.value;is(FB.auth.signInWithEmailAndPassword(e,f.sifre.value))}
+  if(f.id==='fbKayitForm'){const ad=f.ad.value.trim(),e=f.eposta.value.trim(),s1=f.s1.value;if(!ad){hata('Adınızı yazın');return true}if(s1.length<8){hata('Şifre en az 8 karakter olmalı');return true}if(s1!==f.s2.value){hata('İki şifre aynı değil; tekrar yazın');return true}
+    U.fbEposta=e;FB._sifre=s1;is((async()=>{const c=await FB.auth.createUserWithEmailAndPassword(e,s1);await c.user.updateProfile({displayName:ad});FB.ad=ad;await c.user.sendEmailVerification().catch(()=>{});toast('Hesabınız oluşturuldu');render()})())}
+  if(f.id==='fbUnuttumForm'){const e=f.eposta.value.trim();U.fbEposta=e;is(FB.auth.sendPasswordResetEmail(e).then(()=>{const o=document.getElementById('gOk');if(o){o.hidden=false;o.textContent='Bağlantı gönderildi. E-postanızı (gerekirse istenmeyen/spam klasörünü) açın, bağlantıya tıklayıp yeni şifrenizi yazın, sonra buradan giriş yapın.'}}))}
+  if(f.id==='fbKilitForm'){const sf=f.sifre.value;is((async()=>{const o=FB.oturumAl();if(o&&o.ozet&&o.uid===FB.user.uid&&await pinOzet(o.tuz,sf)===o.ozet){FB.kilit=false;render();return}
+    const u=FB.auth&&FB.auth.currentUser;if(!u)throw{code:'auth/wrong-password'};await u.reauthenticateWithCredential(firebase.auth.EmailAuthProvider.credential(u.email,sf));FB.oturumSakla(sf);FB.kilit=false;render()})())}
+  if(f.id==='klinikKurForm'){const ad=f.ad.value.trim();if(!ad){hata('Klinik adını yazın');return true}is(FB.klinikKur(ad).then(()=>toast('Klinik hazır. Çalışanlarınızı Ayarlar bölümünden davet edebilirsiniz')))}
+  if(f.id==='fbDavetForm')is(FB.davetEt(f.eposta.value,f.rol.value).then(()=>{toast('Davet kaydedildi. Kişi bu e-postayla kayıt olunca panele katılır');f.reset()}));
+  if(f.id==='cdForm')is(FB.cevrimdisiGir(f.eposta.value,f.sifre.value));
+  return true}
+
+function aktifKul(){if(FB.mod())return FB.user&&FB.klinik?{id:FB.user.uid,ad:FB.ad||FB.user.email,rol:FB.rol}:null;return S.ayar.kullanicilar.find(u=>u.id===U.kul)||null}
+function kilitli(){if(FB.mod())return!FB.user||!FB.klinik||FB.kilit;return S.ayar.kullanicilar.length>0&&!aktifKul()}
 function izinli(t){const u=aktifKul();if(!u||u.rol!=='sekreter')return true;return!['raporlar','ayarlar','kurulum'].includes(t)}
 function logla(m){S.log=S.log||[];S.log.push({id:uid(),t:new Date().toISOString(),c:CIHAZ,u:(aktifKul()||{}).ad||'',i:String(m).slice(0,300)});if(S.log.length>3000)S.log=S.log.slice(-3000)}
 async function pinOzet(tuz,pin){const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(tuz+':'+pin));return [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')}
 let SON_HAREKET=Date.now();['pointerdown','keydown'].forEach(ev=>document.addEventListener(ev,()=>SON_HAREKET=Date.now(),true));
-function vIlkPin(){return `<section class="hos" style="max-width:520px;margin:24px auto"><div class="hosUst"><div class="hosLogo"><svg aria-hidden="true" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></div><p class="hosEt">Hoş geldiniz · İlk adım</p><h1>Önce bir giriş şifresi belirleyin</h1><p>Program her açılışta bu şifreyi soracak. Hasta bilgileri böylece korunur.</p></div>
-  <form id="ilkPinForm" class="hosAlt"><label class="f" for="ipAd">Adınız<input id="ipAd" name="ad" required placeholder="Örn. Dt. Eren"></label>
-  <div class="grid2"><label class="f" for="ipP1">Şifre (4-8 rakam)<input id="ipP1" name="p1" type="password" inputmode="numeric" autocomplete="new-password" maxlength="8" required></label><label class="f" for="ipP2">Şifre tekrar<input id="ipP2" name="p2" type="password" inputmode="numeric" autocomplete="new-password" maxlength="8" required></label></div>
-  <div id="ipUy" class="warnbox" hidden></div>
-  <p class="note">Bu şifreyi bir kâğıda yazıp güvenli bir yerde saklayın. Unutulursa kurtarılamaz. Sonradan Ayarlar › Kullanıcılar'dan sekreter ve diğer hekimler için ayrı şifre ekleyebilirsiniz.</p>
-  <button class="btn pri lg" type="submit">Şifreyi kaydet ve başla →</button></form></section>`}
-function vKilit(){const L=S.ayar.kullanicilar;const sec=L.find(u=>u.id===U.kulSec)||(L.length===1?L[0]:null);
-  return `<section class="panel" style="max-width:420px;margin:40px auto;gap:16px"><h1>${esc(S.ayar.klinik)}</h1><p class="muted" style="margin:0">Devam etmek için kullanıcınızı seçip PIN girin.</p>
-  <div class="seg" role="group" aria-label="Kullanıcı">${L.map(u=>`<button class="${sec&&sec.id===u.id?'on':''}" data-a="kulSec" data-v="${u.id}">${esc(u.ad)} <span class="muted" style="font-weight:500">· ${ROL[u.rol]}</span></button>`).join('')}</div>
-  ${sec?`<form id="kilitForm" class="list" data-id="${sec.id}"><label class="f" for="kPin">${esc(sec.ad)} için PIN<input id="kPin" name="pin" type="password" inputmode="numeric" autocomplete="off" maxlength="8" required></label><div id="kUy" class="warnbox" hidden></div><button class="btn pri" type="submit">Aç</button></form>`:''}
-  <p class="note">PIN ekranı başkasının kullanmasını engeller; veriyi şifrelemez.</p></section>`}
+/* ---------- Giriş: giriş yap / kayıt ol / şifremi unuttum ---------- */
+const KS='randevuMasasi.giris';
+function denemeAl(){try{return JSON.parse(localStorage.getItem(KS)||'{}')||{}}catch(e){return{}}}
+function denemeYaz(o){try{localStorage.setItem(KS,JSON.stringify(o))}catch(e){}}
+function bekleSn(){const d=denemeAl();return d.bit&&d.bit>Date.now()?Math.ceil((d.bit-Date.now())/1000):0}
+function yanlisDeneme(){const d=denemeAl();d.n=(d.n||0)+1;if(d.n>=5)d.bit=Date.now()+30000*Math.pow(2,Math.min(6,d.n-5));denemeYaz(d);return d}
+function kolayPin(p){return /^(\d)\1+$/.test(p)||'01234567890'.includes(p)||'09876543210'.includes(p)||/^(19|20)\d\d$/.test(p)}
+function kurtarKodu(){const A='ABCDEFGHJKMNPQRSTUVWXYZ23456789',b=new Uint32Array(12);crypto.getRandomValues(b);let k='';b.forEach((x,i)=>{k+=A[x%A.length];if(i%4===3&&i<11)k+='-'});return k}
+const kodDuz=k=>String(k||'').toUpperCase().replace(/[^A-Z0-9]/g,'');
+async function kurtarAta(u){const k=kurtarKodu();u.ktuz=uid()+uid();u.kurtar=await pinOzet(u.ktuz,kodDuz(k));return k}
+function girisKabuk(baslik,alt,ic,ikon){const L=S.ayar.kullanicilar,m=U.giris;
+  const sek=L.length&&!FB.mod()?`<div class="seg" role="tablist" aria-label="Giriş seçenekleri"><button role="tab" class="${m==='giris'?'on':''}" data-a="girisMod" data-v="giris">Giriş yap</button><button role="tab" class="${m==='kayit'?'on':''}" data-a="girisMod" data-v="kayit">Kayıt ol</button></div>`:'';
+  return `<section class="hos" style="max-width:520px;margin:24px auto"><div class="hosUst"><div class="hosLogo"><svg aria-hidden="true" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${ikon||'<rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>'}</svg></div><p class="hosEt">${esc(S.ayar.klinik)}</p><h1>${baslik}</h1><p>${alt}</p></div><div class="hosAlt">${m==='kod'||m==='unuttum'?'':sek}${ic}</div></section>`}
+function vGiris(){const L=S.ayar.kullanicilar;if(!L.length&&U.giris!=='kod')U.giris='kayit';if(!U.giris)U.giris='giris';const m=U.giris;
+  if(m==='kod'){const k=U.yeniKod||'';return girisKabuk('Kurtarma kodunuz','Şifrenizi unutursanız bu kodla yenisini koyarsınız.',`<div class="kurtarKod" aria-label="Kurtarma kodu">${esc(k)}</div>
+    <p class="note"><b>Bu kodu şimdi bir kâğıda yazın</b> ve şifreden ayrı bir yerde saklayın. Kod bir daha gösterilmez. Kodu kaybederseniz şifrenizi yönetici sıfırlayabilir.</p>
+    <label class="chk" for="kodYazdim"><input type="checkbox" id="kodYazdim"><span>Kodu kâğıda yazdım</span></label>
+    <button class="btn pri lg" data-a="kodTamam">Devam et →</button>`,'<path d="M12 2l8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6z"/><path d="M9 12l2 2 4-4"/>')}
+  if(m==='unuttum'){return girisKabuk('Şifremi unuttum','Kayıt olurken verilen kurtarma koduyla yeni şifre belirleyin.',`<form id="unuttumForm" class="list">
+    <label class="f" for="uuKul">Kullanıcı<select id="uuKul" name="kul">${L.map(u=>`<option value="${u.id}" ${U.kulSec===u.id?'selected':''}>${esc(u.ad)} · ${ROL[u.rol]}</option>`).join('')}</select></label>
+    <label class="f" for="uuKod">Kurtarma kodu<input id="uuKod" name="kod" autocomplete="off" autocapitalize="characters" placeholder="XXXX-XXXX-XXXX" required></label>
+    <div class="grid2"><label class="f" for="uuP1">Yeni şifre (4-8 rakam)<input id="uuP1" name="p1" type="password" inputmode="numeric" autocomplete="new-password" maxlength="8" required></label><label class="f" for="uuP2">Yeni şifre tekrar<input id="uuP2" name="p2" type="password" inputmode="numeric" autocomplete="new-password" maxlength="8" required></label></div>
+    <div id="gUy" class="warnbox" hidden></div><button class="btn pri lg" type="submit">Yeni şifreyi kaydet</button></form>
+    <p class="note">Kodunuz yoksa: yönetici, Ayarlar › Kullanıcılar'dan şifrenizi sıfırlayabilir. Yöneticinin şifresi ve kodu ikisi birden kaybolursa program açılamaz; bu yüzden ikinci bir yönetici eklemeniz önerilir.</p>
+    <button class="btn" data-a="girisMod" data-v="giris">← Girişe dön</button>`,'<circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.7M12 17h.01"/>')}
+  if(m==='kayit'){const ilk=!L.length,yon=L.filter(u=>u.rol==='yonetici');
+    return girisKabuk(ilk?'Hesabınızı oluşturun':'Yeni kullanıcı kaydı',ilk?'İlk hesap yönetici olur. Program her açılışta bu şifreyi soracak.':'Yeni kayıt için bir yöneticinin onayı gerekir.',`<form id="kayitForm" class="list">
+    <label class="f" for="kyAd">Ad soyad<input id="kyAd" name="ad" required placeholder="Örn. Dt. Eren Can Dursun" autocomplete="name"></label>
+    <label class="f" for="kyEp">E-posta (isteğe bağlı)<input id="kyEp" name="eposta" type="email" autocomplete="email" placeholder="ornek@mail.com"></label>
+    ${ilk?'':`<label class="f" for="kyRol">Görevi<select id="kyRol" name="rol"><option value="sekreter">Sekreter</option><option value="hekim">Hekim</option><option value="yonetici">Yönetici</option></select></label>`}
+    <div class="grid2"><label class="f" for="kyP1">Şifre (4-8 rakam)<input id="kyP1" name="p1" type="password" inputmode="numeric" autocomplete="new-password" maxlength="8" required></label><label class="f" for="kyP2">Şifre tekrar<input id="kyP2" name="p2" type="password" inputmode="numeric" autocomplete="new-password" maxlength="8" required></label></div>
+    ${ilk?'':`<fieldset class="panel" style="padding:12px;gap:8px;box-shadow:none"><legend class="muted" style="font-size:13px;font-weight:700;padding:0 4px">Yönetici onayı</legend><div class="grid2"><label class="f" for="kyYon">Yönetici<select id="kyYon" name="yon">${yon.map(u=>`<option value="${u.id}">${esc(u.ad)}</option>`).join('')}</select></label><label class="f" for="kyYp">Yöneticinin şifresi<input id="kyYp" name="yp" type="password" inputmode="numeric" autocomplete="off" maxlength="8" required></label></div></fieldset>`}
+    <div id="gUy" class="warnbox" hidden></div><button class="btn pri lg" type="submit">${ilk?'Hesabı oluştur ve başla →':'Kaydı tamamla'}</button></form>`,'<circle cx="9" cy="8" r="4"/><path d="M2 21c0-4 3-6 7-6s7 2 7 6M19 8v6M16 11h6"/>')}
+  const sec=L.find(u=>u.id===U.kulSec)||(L.length===1?L[0]:null),bs=bekleSn();
+  return girisKabuk('Giriş yap','Kullanıcınızı seçip şifrenizi girin.',`<div class="seg" role="group" aria-label="Kullanıcı">${L.map(u=>`<button class="${sec&&sec.id===u.id?'on':''}" data-a="kulSec" data-v="${u.id}">${esc(u.ad)} <span class="muted" style="font-weight:500">· ${ROL[u.rol]}</span></button>`).join('')}</div>
+    ${sec?`<form id="kilitForm" class="list" data-id="${sec.id}"><label class="f" for="kPin">${esc(sec.ad)} için şifre (PIN)<input id="kPin" name="pin" type="password" inputmode="numeric" autocomplete="current-password" maxlength="8" required ${bs?'disabled':''}></label><div id="kUy" class="warnbox" ${bs?'':'hidden'}>${bs?`Çok fazla yanlış deneme. ${bs} saniye sonra tekrar deneyin.`:''}</div><button class="btn pri lg" type="submit" ${bs?'disabled':''}>Giriş yap →</button></form>`:'<p class="muted" style="margin:0">Devam etmek için kullanıcınızı seçin; ardından şifre (PIN) sorulur.</p>'}
+    <div class="row" style="justify-content:space-between"><button class="btn sm" data-a="girisMod" data-v="unuttum">Şifremi unuttum</button><button class="btn sm" data-a="girisMod" data-v="kayit">Hesabın yok mu? Kayıt ol</button></div>
+    <p class="note">Şifre bu cihazdaki ekranı kilitler. Hasta bilgileri yalnızca bu cihazda ve bağlıysa kliniğin kendi Google Drive'ında durur.</p>`)}
+function pinAyarForm(id){const u=S.ayar.kullanicilar.find(x=>x.id===id);if(!u)return;sheet(`<header><h2>${esc(u.ad)} · şifre sıfırla</h2>${kapatBtn}</header><form id="pinSifirForm" data-id="${u.id}" class="list"><div class="grid2"><label class="f" for="psP1">Yeni şifre (4-8 rakam)<input id="psP1" name="p1" type="password" inputmode="numeric" autocomplete="new-password" maxlength="8" required></label><label class="f" for="psP2">Tekrar<input id="psP2" name="p2" type="password" inputmode="numeric" autocomplete="new-password" maxlength="8" required></label></div><div id="gUy" class="warnbox" hidden></div><button class="btn pri" type="submit">Şifreyi değiştir</button></form><p class="note">Kişiye yeni bir kurtarma kodu da verilir; ekranda bir kez gösterilir.</p>`)}
 function vKullanicilar(){const L=S.ayar.kullanicilar;
   return `<section class="panel"><h2>Kullanıcılar ve kilit</h2><p class="note">Kullanıcı eklenince program açılışta PIN ister ve hareketsiz kalınca kilitlenir. Sekreter raporları ve ayarları göremez. İşlem kaydında kimin ne yaptığı görünür.</p>
-  ${L.length?'<div class="list">'+L.map(u=>`<div class="row" style="flex-wrap:nowrap"><span style="flex:1"><b>${esc(u.ad)}</b> · ${ROL[u.rol]}${u.id===U.kul?' <span class="pill ok">şu an açık</span>':''}</span><button class="btn sm bad" data-a="kulSil" data-id="${u.id}">${U.onayBekle==='ku'+u.id?'Emin misiniz?':'Sil'}</button></div>`).join('')+'</div>':''}
+  ${L.length?'<div class="list">'+L.map(u=>`<div class="row" style="flex-wrap:nowrap"><span style="flex:1"><b>${esc(u.ad)}</b> · ${ROL[u.rol]}${u.id===U.kul?' <span class="pill ok">şu an açık</span>':''}</span>${(aktifKul()||{}).rol==='yonetici'||u.id===U.kul?`<button class="btn sm" data-a="pinSifirla" data-id="${u.id}">Şifre sıfırla</button>`:''}<button class="btn sm bad" data-a="kulSil" data-id="${u.id}">${U.onayBekle==='ku'+u.id?'Emin misiniz?':'Sil'}</button></div>`).join('')+'</div>':''}
   <form id="kulForm" class="grid3"><label class="f" for="kuAd">Ad<input id="kuAd" name="ad" required></label><label class="f" for="kuRol">Rol<select id="kuRol" name="rol">${(L.some(u=>u.rol==='yonetici')?['hekim','sekreter','yonetici']:['yonetici']).map(x=>`<option value="${x}">${ROL[x]}</option>`).join('')}</select></label><label class="f" for="kuPin">PIN (4-8 rakam)<input id="kuPin" name="pin" type="password" inputmode="numeric" autocomplete="new-password" required></label>
   <div class="row" style="grid-column:1/-1"><button class="btn pri" type="submit">Kullanıcı ekle</button>${L.length?`<label class="f" for="kuDk" style="flex-direction:row;align-items:center;gap:8px">Otomatik kilit<select id="kuDk" style="width:auto">${[5,10,15,30,0].map(d=>`<option value="${d}" ${S.ayar.kilitDk==d?'selected':''}>${d?d+' dk':'Kapalı'}</option>`).join('')}</select></label>`:'<span class="muted" style="font-size:13px">İlk kullanıcı yönetici olur.</span>'}</div></form></section>
   <section class="panel"><div class="row"><h2 style="flex:1">İşlem kaydı</h2><button class="btn sm" data-a="csvLog">CSV kaydet</button></div>
@@ -1350,7 +1486,7 @@ function ucYol(l,r,b,say){const J=JSON.stringify;if(J(l)===J(r))return l;if(b===
   if(nesne(l)&&nesne(r)&&nesne(b)){const o={};new Set([...Object.keys(l),...Object.keys(r)]).forEach(k=>{if(!(k in r)){if(J(l[k])!==J(b[k]))o[k]=l[k];return}if(!(k in l)){if(J(r[k])!==J(b[k]))o[k]=r[k];return}o[k]=ucYol(l[k],r[k],b[k],say)});return o}
   say.n++;return l}
 const ozet=o=>{const t=JSON.stringify(o);let h=2166136261;for(let i=0;i<t.length;i++){h^=t.charCodeAt(i);h=Math.imul(h,16777619)}return(h>>>0).toString(36)};
-const disa=()=>{const o=Object.assign({},S);delete o._es;return JSON.stringify(o)};
+const disa=()=>{const o=Object.assign({},S);delete o._es;delete o._fb;return JSON.stringify(o)};
 function tabanAl(o){const b={};KOL.forEach(c=>{b[c]={};(o[c]||[]).forEach(x=>b[c][x.id]=ozet(x))});b._ayar=ozet(o.ayar);return b}
 function birlestir(L,R,B){B=B||{};const o=Object.assign({},R,L);let cakisma=0;const TV=ES.tabanVeri;
   if(TV&&TV.ayar){const say={n:0};KOL.forEach(c=>o[c]=ucYol(L[c]||[],R[c]||[],TV[c]||[],say));o.ayar=ucYol(L.ayar,R.ayar,TV.ayar,say);o.mesaj=Object.assign({},R.mesaj||{},L.mesaj||{});o.sayac={};new Set([...Object.keys(R.sayac||{}),...Object.keys(L.sayac||{})]).forEach(y=>o.sayac[y]=Math.max((R.sayac||{})[y]||0,(L.sayac||{})[y]||0));o.sonYedek=[L.sonYedek||'',R.sonYedek||''].sort().pop();o.gcalSil=[...new Set([...(L.gcalSil||[]),...(R.gcalSil||[])])];o.kurulum=L.kurulum&&L.kurulum.tamam?L.kurulum:(R.kurulum||L.kurulum);return{o,cakisma:say.n}}
@@ -1364,7 +1500,7 @@ function birlestir(L,R,B){B=B||{};const o=Object.assign({},R,L);let cakisma=0;co
   return{o,cakisma}}
 const ES={kirli:false,calisiyor:false,zaman:null,durum:'',tabanVeri:null,
   tabanKaydet(o){const t=JSON.stringify(o);this.tabanVeri=JSON.parse(t);IDB.vput('taban',t).catch(()=>{})},
-  aktif(){return S.ayar.entegrasyon.drive.mod==='ana'&&!!DRV.yol()},
+  aktif(){return!FB.mod()&&S.ayar.entegrasyon.drive.mod==='ana'&&!!DRV.yol()},
   goster(d,metin){this.durum=d;const b=document.getElementById('esDurum');if(!b)return;b.hidden=!this.aktif();b.className='es '+({ok:'ok',is:'is',hata:'hata'}[d]||'');b.textContent=metin;b.title='Drive eşitleme durumu — dokunarak şimdi eşitleyin'},
   async dosyalar(){const ust=await DRV.anaKlasor();const q=DRV.yol()==='mcp'?`parentId = '${ust}' and title contains 'randevu-masasi-veri' and trashed = false`:`'${ust}' in parents and name contains 'randevu-masasi-veri' and trashed = false`;
     return(await DRV.ara(q)).sort((a,b)=>String(b.degisim).localeCompare(String(a.degisim))||String(b.ad).localeCompare(String(a.ad)))},
@@ -1383,7 +1519,7 @@ const ES={kirli:false,calisiyor:false,zaman:null,durum:'',tabanVeri:null,
     catch(e){this.goster('hata','Drive: eşitlenemedi');if(elle||!this.uyardi){toast(DRV.hata(e));this.uyardi=true}}
     finally{this.calisiyor=false;if(this.tekrar){this.tekrar=false;setTimeout(()=>this.esitle(),500)}}},
   degisti(){if(!this.aktif())return;this.kirli=true;this.goster('is','Drive: kaydedilecek');clearTimeout(this.zaman);this.zaman=setTimeout(()=>this.esitle(),2500)}};
-window.__rmDegisti=()=>ES.degisti();
+window.__rmDegisti=()=>{ES.degisti();FB.degisti()};
 
 /* ---------- Google Takvim ---------- */
 const TKV={
@@ -1811,9 +1947,8 @@ function basGiydir(){const v=document.getElementById('view');if(!v||U.tab==='kur
   const ms=b.querySelector(':scope > span.muted');if(ms){ms.classList.add('sbAlt');m.appendChild(ms)}
   if(d&&!b.firstElementChild.matches('button')){const i=document.createElement('i');i.className='sbIk';i.setAttribute('aria-hidden','true');i.innerHTML=`<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${d[1]}</svg>`;b.prepend(i)}}
 function render(){
-  if(!S.ayar.kullanicilar.length&&!window.__RM_TEST){document.querySelector('.nav').hidden=true;document.getElementById('view').innerHTML=vIlkPin();const a=document.getElementById('ipAd');if(a)a.focus();return}
-  if(kilitli()){document.querySelector('.nav').hidden=true;const kb=document.getElementById('kilitBtn');if(kb)kb.hidden=true;document.getElementById('view').innerHTML=vKilit();const p=document.getElementById('kPin');if(p)p.focus();return}
-  document.querySelector('.nav').hidden=false;{const kb=document.getElementById('kilitBtn');if(kb){kb.hidden=!S.ayar.kullanicilar.length;const u=aktifKul();kb.textContent=u?kes(u.ad,16)+' · Kilitle':'Kilitle'}}
+  const fbm=FB.mod();if(fbm?kilitli():((!S.ayar.kullanicilar.length&&!window.__RM_TEST)||kilitli()||U.yeniKod)){document.querySelector('.nav').hidden=true;const kb=document.getElementById('kilitBtn');if(kb)kb.hidden=true;document.getElementById('view').innerHTML=fbm?vFbGiris():vGiris();const p=document.querySelector('#view form input:not([type=hidden])');if(p)p.focus();return}
+  document.querySelector('.nav').hidden=false;{const kb=document.getElementById('kilitBtn');if(kb){kb.hidden=!fbm&&!S.ayar.kullanicilar.length;const u=aktifKul();kb.textContent=u?kes(u.ad,16)+' · Kilitle':'Kilitle'}}
   document.querySelectorAll('.nav [data-t]').forEach(b=>b.hidden=!izinli(b.dataset.t));if(!izinli(U.tab))U.tab='gun';
   document.querySelectorAll('.nav [data-t]').forEach(b=>{b.classList.toggle('on',b.dataset.t===U.tab);if(b.dataset.t===U.tab)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current')});
   document.getElementById('view').innerHTML=({gun:vGun,listeler:vListeler,hastalar:vHastalar,kasa:vKasa,raporlar:vRaporlar,ayarlar:vAyarlar,kurulum:vKurulum}[U.tab]||vGun)();
@@ -1827,7 +1962,7 @@ document.addEventListener('click',e=>{
   const el=e.target.closest('[data-a]');if(!el)return;
   const a=el.dataset.a,id=el.dataset.id;
   if(a==='ovKapat'){if(e.target===el)kapat();render();return}
-  if(!['talepSil','hepsiniSil','kisiSil','iptal','gvSil','giderSil','stokSil','ornekTemizle','kulSil'].includes(a))U.onayBekle=null;
+  if(!['talepSil','hepsiniSil','kisiSil','iptal','gvSil','giderSil','stokSil','ornekTemizle','kulSil','fbCikar'].includes(a))U.onayBekle=null;
   const r=id?rv(id):null;const H=()=>kisi(U.hasta);
   switch(a){
     case'tab':U.tab=el.dataset.t;if(U.tab!=='hastalar')U.hasta=null;else if(U.hasta&&e.isTrusted)U.hasta=null;try{sessionStorage.setItem(KEY+'.tab',U.tab)}catch(_){}render();window.scrollTo(0,0);break;
@@ -1894,9 +2029,18 @@ document.addEventListener('click',e=>{
     case'fatXml':{const k=H(),t=k&&k.tahsilat.find(x=>x.id===id);if(t&&t.fat)kaydetDosya(t.fat.no+'.xml',new Blob([ublXml(k,t)],{type:'application/xml'}));break}
     case'fatGonder':{const k=H(),t=k&&k.tahsilat.find(x=>x.id===id);if(t&&t.fat)faturaGonder(k,t);break}
     case'fatKopya':{const k=H(),t=k&&k.tahsilat.find(x=>x.id===id);if(!t||!t.fat)return;const x=fatMetin(k,t);(navigator.clipboard?navigator.clipboard.writeText(x):Promise.reject()).then(()=>toast('Belge bilgileri kopyalandı')).catch(()=>toast('Kopyalanamadı'));break}
-    case'esitleSimdi':ES.esitle(true);break;
+    case'esitleSimdi':if(FB.aktif()){FB.esitle(true);break}ES.esitle(true);break;
     case'kulSec':U.kulSec=el.dataset.v;render();break;
-    case'kilitle':U.kul=null;U.kulSec=null;try{sessionStorage.removeItem(KEY+'.kul')}catch(_){}kapat();render();break;
+    case'girisMod':U.giris=el.dataset.v;render();break;
+    case'fbCikis':FB.cikis();break;
+    case'fbUnuttum':U.fbEposta=FB.user?FB.user.email:'';FB.cikis(false).then(()=>{U.giris='unuttum';render()});break;
+    case'fbYenile':(async()=>{try{const u=FB.auth.currentUser;await u.reload();await u.getIdToken(true);await FB.durum(FB.auth.currentUser);if(!FB.klinik)toast(FB.auth.currentUser.emailVerified?'E-posta doğrulandı; bu adrese henüz davet yok':'E-posta henüz doğrulanmamış görünüyor')}catch(e){toast(fbHata(e))}})();break;
+    case'fbDogrulamaGonder':FB.auth.currentUser.sendEmailVerification().then(()=>toast('Doğrulama e-postası tekrar gönderildi'),e=>toast(fbHata(e)));break;
+    case'fbDavetSil':FB.davetSil(el.dataset.v).then(()=>toast('Davet iptal edildi'),e=>toast(fbHata(e)));break;
+    case'fbCikar':if(U.onayBekle!=='fc'+id){U.onayBekle='fc'+id;el.textContent='Emin misiniz?';return}U.onayBekle=null;FB.uyeCikar(id).then(()=>toast('Kullanıcı klinikten çıkarıldı'),e=>toast(fbHata(e)));break;
+    case'kodTamam':{const c=document.getElementById('kodYazdim');if(c&&!c.checked){toast('Önce kodu kâğıda yazdığınızı işaretleyin');return}U.yeniKod=null;U.giris='giris';render();if(!kilitli())kaydet('');break}
+    case'pinSifirla':pinAyarForm(id);break;
+    case'kilitle':if(FB.mod()){FB.kilit=true;kapat();render();break}U.kul=null;U.kulSec=null;try{sessionStorage.removeItem(KEY+'.kul')}catch(_){}kapat();render();break;
     case'kulSil':{if(U.onayBekle!=='ku'+id){U.onayBekle='ku'+id;el.textContent='Emin misiniz?';return}const L=S.ayar.kullanicilar,u=L.find(x=>x.id===id);if(u&&u.rol==='yonetici'&&L.filter(x=>x.rol==='yonetici').length===1&&L.length>1){toast('Son yönetici silinemez; önce başka yönetici ekleyin');U.onayBekle=null;render();return}S.ayar.kullanicilar=L.filter(x=>x.id!==id);if(U.kul===id)U.kul=null;U.onayBekle=null;kaydet('Kullanıcı silindi: '+(u?u.ad:''));break}
     case'csvLog':csvKaydet('islem-kaydi-'+TODAY,[['Zaman','Kullanıcı','Cihaz','İşlem']].concat((S.log||[]).map(x=>[new Date(x.t).toLocaleString('tr-TR'),x.u,x.c,x.i])));break;
     case'takvimEsitle':TKV.esitle(true);break;
@@ -1971,6 +2115,7 @@ document.addEventListener('change',e=>{
   if(t.id==='gunSec'&&t.value){U.gun=t.value;render()}
   if(t.id==='kasaGun'&&t.value){U.kasaGun=t.value;render()}
   if(t.id==='sutT'){U.sut=t.checked;render()}
+  if(t.dataset.a==='fbRol'){FB.rolDegis(t.dataset.id,t.value).then(()=>toast('Görev değiştirildi'),e=>{toast(fbHata(e));render()})}
   if(t.id==='kuDk'){S.ayar.kilitDk=Number(t.value);kaydet('Otomatik kilit: '+(S.ayar.kilitDk?S.ayar.kilitDk+' dk':'kapalı'))}
   if(t.closest&&t.closest('#disForm')&&t.type==='checkbox'&&KOSUL[t.name]){const f=document.getElementById('disForm');const on=document.getElementById('disOn');if(f&&on)on.firstElementChild.outerHTML=disSvg(f.dataset.no,Object.keys(KOSUL).filter(x=>f[x].checked),TP.ekran,{w:64})}
   if(t.id==='krA'||t.id==='krB'){U.kr[t.id==='krA'?'a':'b']=t.value;krCiz()}
@@ -1986,7 +2131,7 @@ document.addEventListener('dragleave',e=>{const d=e.target.closest&&e.target.clo
 document.addEventListener('drop',e=>{const d=e.target.closest&&e.target.closest('#drop');if(d){e.preventDefault();d.classList.remove('over');dosyaEkle([...e.dataTransfer.files])}});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&document.querySelector('.ov')){kapat();render()}});
 document.addEventListener('submit',e=>{
-  e.preventDefault();const f=e.target;const k0=()=>kisi(U.hasta);
+  e.preventDefault();const f=e.target;const k0=()=>kisi(U.hasta);if(fbForm(f))return;
   if(f.id==='rForm'){
     if(!uyari(true))return;
     const k=kisiBulYaKur(f.ad.value.trim(),f.tel.value.trim(),f.dataset.kisi);
@@ -2027,11 +2172,20 @@ document.addEventListener('submit',e=>{
     const oran=Number(F.kdv)||0,top=Number(t.tutar)||0,mat=Math.round(top/(1+oran/100)*100)/100,y=t.tarih.slice(0,4),key='fat'+y;S.sayac[key]=(S.sayac[key]||0)+1;
     t.fat={no:(F.seri||'RMS')+y+String(S.sayac[key]).padStart(9,'0'),uuid:(crypto.randomUUID?crypto.randomUUID():uid()+uid()),tarih:t.tarih,saat:saatSimdi(),tur:F.tur,tckn:tc||'11111111111',aciklama:f.aciklama.value.trim()||'Diş tedavi hizmeti',oran,matrah:mat,kdv:Math.round((top-mat)*100)/100,toplam:top,durum:'olusturuldu'};
     kaydet('e-Belge hazırlandı: '+t.fat.no);faturaForm(k,t.id);return}
-  if(f.id==='ilkPinForm'){const ad=f.ad.value.trim(),p1=f.p1.value.trim(),w=document.getElementById('ipUy');const hata=m=>{w.hidden=false;w.textContent=m};
-    if(!ad)return hata('Adınızı yazın');if(!/^\d{4,8}$/.test(p1))return hata('Şifre 4 ile 8 arasında rakam olmalı');if(p1!==f.p2.value.trim())return hata('İki şifre aynı değil');if(/^(\d)\1+$/.test(p1)||'0123456789'.includes(p1)||'9876543210'.includes(p1))return hata('Bu şifre çok kolay tahmin edilir; başka bir şifre seçin');
-    const tuz=uid()+uid();pinOzet(tuz,p1).then(h=>{const u={id:uid(),ad,rol:'yonetici',pin:h,tuz};S.ayar.kullanicilar.push(u);U.kul=u.id;try{sessionStorage.setItem(KEY+'.kul',u.id)}catch(_){}SON_HAREKET=Date.now();kaydet('Giriş şifresi oluşturuldu: '+ad)});return}
-  if(f.id==='kilitForm'){const u=S.ayar.kullanicilar.find(x=>x.id===f.dataset.id);if(!u)return;pinOzet(u.tuz,f.pin.value).then(h=>{if(h===u.pin){U.kul=u.id;try{sessionStorage.setItem(KEY+'.kul',u.id)}catch(_){}SON_HAREKET=Date.now();logla('Oturum açıldı');save();render()}else{const w=document.getElementById('kUy');w.hidden=false;w.textContent='PIN yanlış.';f.pin.value='';f.pin.focus()}});return}
-  if(f.id==='kulForm'){const ad=f.ad.value.trim(),pin=f.pin.value.trim();if(!ad||!/^\d{4,8}$/.test(pin)){toast('Ad ve 4-8 haneli rakam PIN girin');return}const tuz=uid()+uid();pinOzet(tuz,pin).then(h=>{const u={id:uid(),ad,rol:f.rol.value,pin:h,tuz};S.ayar.kullanicilar.push(u);if(!U.kul){U.kul=u.id;try{sessionStorage.setItem(KEY+'.kul',u.id)}catch(_){}}kaydet('Kullanıcı eklendi: '+ad+' ('+ROL[u.rol]+')')});return}
+  if(['kayitForm','unuttumForm','pinSifirForm'].includes(f.id)){const w=document.getElementById('gUy');const hata=m=>{w.hidden=false;w.textContent=m};const p1=f.p1.value.trim();
+    if(!/^\d{4,8}$/.test(p1))return hata('Şifre 4 ile 8 arasında rakam olmalı');if(p1!==f.p2.value.trim())return hata('İki şifre aynı değil');if(kolayPin(p1))return hata('Bu şifre çok kolay tahmin edilir (1234, 0000, doğum yılı gibi); başka bir şifre seçin');
+    const L=S.ayar.kullanicilar;
+    if(f.id==='kayitForm'){const ad=f.ad.value.trim();if(!ad)return hata('Adınızı yazın');if(L.some(u=>u.ad.toLocaleLowerCase('tr')===ad.toLocaleLowerCase('tr')))return hata('Bu adla bir kullanıcı zaten var');
+      const yeni=async()=>{const tuz=uid()+uid();const u={id:uid(),ad,eposta:f.eposta.value.trim().slice(0,120),rol:L.length?f.rol.value:'yonetici',pin:await pinOzet(tuz,p1),tuz};const k=await kurtarAta(u);L.push(u);U.kul=u.id;U.kulSec=u.id;try{sessionStorage.setItem(KEY+'.kul',u.id)}catch(_){}SON_HAREKET=Date.now();logla('Kayıt olundu: '+ad+' ('+ROL[u.rol]+')');save();U.yeniKod=k;U.giris='kod';render()};
+      if(!L.length){yeni();return}
+      if(bekleSn())return hata('Çok fazla yanlış deneme. '+bekleSn()+' saniye bekleyin.');const y=L.find(u=>u.id===f.yon.value&&u.rol==='yonetici');if(!y)return hata('Yönetici seçin');
+      pinOzet(y.tuz,f.yp.value.trim()).then(h=>{if(h!==y.pin){yanlisDeneme();return hata('Yönetici şifresi yanlış')}denemeYaz({});yeni()});return}
+    if(f.id==='unuttumForm'){const u=L.find(x=>x.id===f.kul.value);if(!u)return;if(bekleSn())return hata('Çok fazla yanlış deneme. '+bekleSn()+' saniye bekleyin.');if(!u.kurtar)return hata('Bu kullanıcının kurtarma kodu yok. Yönetici Ayarlar › Kullanıcılar\'dan şifreyi sıfırlayabilir.');
+      pinOzet(u.ktuz,kodDuz(f.kod.value)).then(async h=>{if(h!==u.kurtar){yanlisDeneme();return hata('Kurtarma kodu yanlış')}denemeYaz({});u.tuz=uid()+uid();u.pin=await pinOzet(u.tuz,p1);const k=await kurtarAta(u);U.kul=u.id;try{sessionStorage.setItem(KEY+'.kul',u.id)}catch(_){}SON_HAREKET=Date.now();logla('Şifre kurtarma koduyla yenilendi: '+u.ad);save();U.yeniKod=k;U.giris='kod';render()});return}
+    if(f.id==='pinSifirForm'){const u=L.find(x=>x.id===f.dataset.id),a=aktifKul();if(!u||!a||(a.rol!=='yonetici'&&a.id!==u.id))return hata('Bu işlem için yönetici olmalısınız');
+      (async()=>{u.tuz=uid()+uid();u.pin=await pinOzet(u.tuz,p1);const k=await kurtarAta(u);logla('Şifre sıfırlandı: '+u.ad);save();kapat();sheet(`<header><h2>${esc(u.ad)} · yeni kurtarma kodu</h2>${kapatBtn}</header><div class="kurtarKod">${esc(k)}</div><p class="note">Bu kodu kişiye verin ve kâğıda yazmasını söyleyin. Bir daha gösterilmez.</p>`)})();return}}
+  if(f.id==='kilitForm'){const u=S.ayar.kullanicilar.find(x=>x.id===f.dataset.id);if(!u)return;if(bekleSn()){render();return}pinOzet(u.tuz,f.pin.value).then(h=>{if(h===u.pin){denemeYaz({});U.kul=u.id;try{sessionStorage.setItem(KEY+'.kul',u.id)}catch(_){}SON_HAREKET=Date.now();logla('Oturum açıldı');save();render()}else{const w=document.getElementById('kUy');w.hidden=false;const d=yanlisDeneme();if(d.bit&&d.bit>Date.now()){render();return}w.textContent='Şifre yanlış.'+(d.n>=3?' '+(5-d.n)+' deneme hakkınız kaldı, sonra kısa süre beklemeniz gerekecek.':'');f.pin.value='';f.pin.focus()}});return}
+  if(f.id==='kulForm'){const ad=f.ad.value.trim(),pin=f.pin.value.trim();if(!ad||!/^\d{4,8}$/.test(pin)){toast('Ad ve 4-8 haneli rakam PIN girin');return}const tuz=uid()+uid();pinOzet(tuz,pin).then(async h=>{const u={id:uid(),ad,rol:f.rol.value,pin:h,tuz};const k=await kurtarAta(u);S.ayar.kullanicilar.push(u);if(!U.kul){U.kul=u.id;try{sessionStorage.setItem(KEY+'.kul',u.id)}catch(_){}}kaydet('Kullanıcı eklendi: '+ad+' ('+ROL[u.rol]+')');sheet(`<header><h2>${esc(ad)} · kurtarma kodu</h2>${kapatBtn}</header><div class="kurtarKod">${esc(k)}</div><p class="note">Şifresini unutursa bu kodla yenisini koyar. Kişiye verin; bir daha gösterilmez.</p>`)});return}
   if(f.id==='kz1'){const h=f.hekimler.value.split('\n').map(x=>x.trim()).filter(Boolean);if(!f.klinik.value.trim()){toast('Klinik adını yazın');f.klinik.focus();return}if(!h.length||f.bas.value>=f.bit.value){toast('En az bir hekim girin; kapanış açılıştan sonra olmalı');return}
     Object.assign(S.ayar,{klinik:f.klinik.value.trim(),adres:f.adres.value.trim()||S.ayar.adres,telefon:f.telefon.value.trim()||S.ayar.telefon,hekimler:h,bas:f.bas.value,bit:f.bit.value,slot:Number(f.slot.value)});U.kadim=2;kaydet('Klinik bilgileri kaydedildi');window.scrollTo(0,0)}
   if(f.id==='kz2'){S.ayar.fiyatlar.forEach(x=>{const i=f['kf_'+x.id];if(i)x.fiyat=Math.max(0,Number(i.value)||0)});S.ayar.ornekFiyat=false;U.kadim=3;kaydet('Fiyatlar kaydedildi');window.scrollTo(0,0)}
@@ -2049,15 +2203,16 @@ document.addEventListener('submit',e=>{
   if(f.id==='fiyatForm'){S.ayar.fiyatlar.forEach(x=>{const a=f['ad_'+x.id],p=f['fi_'+x.id];if(a)x.ad=a.value.trim()||x.ad;if(p)x.fiyat=Math.max(0,Number(p.value)||0)});S.ayar.ornekFiyat=false;kaydet('Fiyat listesi kaydedildi')}
   if(f.id==='onamForm'){S.ayar.onamlar.forEach(o=>{const b=f['b_'+o.id],m=f['m_'+o.id];if(b)o.baslik=b.value.trim()||o.baslik;if(m)o.metin=m.value});kaydet('Onam şablonları kaydedildi')}
 });
+if(FB.mod())FB.yukle();
+if(window.__RM_FBTEST)window.__RM={get S(){return S},FB,get U(){return U},kisiBulYaKur,kaydet,render};
 render();
 (async()=>{try{const t=await IDB.vget('S');if(t){const v=JSON.parse(t);if(v&&v.ayar&&(v._kayit||0)>LSK){S=tamamla(v);if(U.tab==='kurulum'&&(S.kurulum.tamam||S.kurulum.atla))U.tab='gun';render()}}const tb=await IDB.vget('taban');if(tb)ES.tabanVeri=JSON.parse(tb)}catch(e){}VHAZIR=true;IDB.vput('S',JSON.stringify(S)).catch(()=>{})})();
 setTimeout(()=>{KOPRU.yukle();WAAPI.otoHatirlat()},3000);setInterval(()=>WAAPI.otoHatirlat(),300000);
-setInterval(()=>{if(S.ayar.kullanicilar.length&&S.ayar.kilitDk&&U.kul&&Date.now()-SON_HAREKET>S.ayar.kilitDk*60000){U.kul=null;U.kulSec=null;try{sessionStorage.removeItem(KEY+'.kul')}catch(_){}kapat();render()}},15000);
+setInterval(()=>{if(FB.mod()){if(FB.user&&FB.klinik&&!FB.kilit&&S.ayar.kilitDk&&Date.now()-SON_HAREKET>S.ayar.kilitDk*60000){FB.kilit=true;kapat();render()}return}if(S.ayar.kullanicilar.length&&S.ayar.kilitDk&&U.kul&&Date.now()-SON_HAREKET>S.ayar.kilitDk*60000){U.kul=null;U.kulSec=null;try{sessionStorage.removeItem(KEY+'.kul')}catch(_){}kapat();render()}},15000);
 setTimeout(()=>{if(ES.aktif()){ES.goster('is','Drive: bağlanıyor…');ES.esitle()}if(TKV.aktif())TKV.esitle()},1200);
 setInterval(()=>{const yeni=iso(new Date());if(yeni!==TODAY){const eski=TODAY;TODAY=yeni;if(U.gun===eski)U.gun=yeni;if(U.kasaGun===eski)U.kasaGun=yeni;if(!document.querySelector('.ov'))render()}},30000);
 setInterval(()=>{if(ES.aktif()&&!ES.kirli)ES.esitle();if(TKV.aktif())TKV.esitle()},60000);
-document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&ES.aktif())ES.esitle()});
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&ES.aktif())ES.esitle();if(document.visibilityState==='visible'&&FB.aktif())FB.esitle()});
 })();
 </script>
-
 </body></html>
